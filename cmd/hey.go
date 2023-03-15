@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -10,9 +11,7 @@ import (
 	"github.com/ekkinox/hey/openai"
 
 	"github.com/briandowns/spinner"
-	execute "github.com/commander-cli/cmd"
 	"github.com/fatih/color"
-	"github.com/guumaster/logsymbols"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
@@ -32,13 +31,8 @@ var heyCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		info := color.New(color.Bold, color.FgBlue).PrintlnFunc()
-		success := color.New(color.Bold, color.FgGreen).PrintlnFunc()
-		error := color.New(color.Bold, color.FgRed).PrintlnFunc()
-
 		genSpinner := spinner.New(spinner.CharSets[21], 100*time.Millisecond)
-		genSpinner.Color("blue")
-		genSpinner.Suffix = " generating ..."
+		genSpinner.Suffix = " generating command ..."
 
 		client, err := openai.InitClient(cfg)
 		if err != nil {
@@ -56,9 +50,7 @@ var heyCmd = &cobra.Command{
 
 		genSpinner.Stop()
 
-		fmt.Print(logsymbols.Info)
-		info("Generated command: ")
-		color.Red(genCmd)
+		color.Blue(genCmd)
 
 		prompt := promptui.Prompt{
 			Label:     "Apply",
@@ -68,36 +60,24 @@ var heyCmd = &cobra.Command{
 		result, err := prompt.Run()
 
 		if err != nil {
-			fmt.Println("Cancelled.")
+			color.Red("Command execution cancelled.")
 			os.Exit(0)
 		}
 
 		if result == "y" {
 
-			execSpinner := spinner.New(spinner.CharSets[21], 100*time.Millisecond)
-			execSpinner.Color("blue")
-			execSpinner.Suffix = " executing ..."
+			cmd := exec.Command("bash", "-c", genCmd)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
 
-			c := execute.NewCommand(genCmd)
-
-			genSpinner.Start()
-
-			err := c.Execute()
-			if err != nil {
-				panic(err.Error())
+			if err := cmd.Run(); err != nil {
+				color.Red("Command execution failure: ", err)
+				os.Exit(1)
 			}
 
-			genSpinner.Stop()
-
-			if c.ExitCode() == 0 {
-				fmt.Print(logsymbols.Success)
-				success("Execution success, output: ")
-				fmt.Println(c.Stdout())
-			} else if c.ExitCode() == 1 {
-				fmt.Print(logsymbols.Error)
-				error("Execution error, output: ")
-				fmt.Println(c.Stderr())
-			}
+			color.Green("Command execution success.")
+			os.Exit(0)
 		}
 	},
 }
