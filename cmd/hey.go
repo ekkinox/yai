@@ -27,7 +27,7 @@ func init() {
 var heyCmd = &cobra.Command{
 	Use:   "hey",
 	Short: "AI powered CLI helper",
-	Long:  "Hey is an AI powered CLI helper: for example `hey list all files in my home directory`.",
+	Long:  "Hey is an AI powered CLI helper: you can try for example `hey list me all files in my home directory, including hidden ones, and sort them`.",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
