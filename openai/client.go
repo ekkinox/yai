@@ -12,6 +12,9 @@ import (
 	"github.com/ekkinox/hey/config"
 )
 
+const error_message = "An error occurred."
+const error_flag = "GENERR"
+
 type Response struct {
 	Choices []struct {
 		Message struct {
@@ -32,7 +35,7 @@ func InitClient(cfg config.Config) (*Client, error) {
 	return &Client{cfg}, nil
 }
 
-func (c *Client) Send(input string) (string, error) {
+func (c *Client) Send(input string) (bool, string, error) {
 
 	payload := fmt.Sprintf(
 		`{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}`,
@@ -43,7 +46,7 @@ func (c *Client) Send(input string) (string, error) {
 
 	req, err := http.NewRequest(http.MethodPost, c.Config.OpenAI.Url, bytes.NewReader([]byte(payload)))
 	if err != nil {
-		return "", err
+		return false, error_message, err
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Config.OpenAI.Key))
@@ -52,24 +55,31 @@ func (c *Client) Send(input string) (string, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("openai: could not make request")
-		return "", err
+		return false, error_message, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("openai: could not read response body")
-		return "", err
+		return false, error_message, err
 	}
 
 	var data Response
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		fmt.Println("openai: could not unmarshal JSON")
-		return "", err
+		return false, error_message, err
 	}
 
-	return strings.Trim(data.Choices[0].Message.Content, "\n"), nil
+	output := strings.Trim(data.Choices[0].Message.Content, "\n")
+
+	if strings.Contains(output, error_flag) {
+		output = strings.ReplaceAll(output, error_flag, "")
+		return false, output, nil
+	}
+
+	return true, output, nil
 }
 
 func (c *Client) buildSystemPrompt() string {
@@ -94,7 +104,7 @@ func (c *Client) buildSystemPrompt() string {
 
 	prompt += "Your response should contain ONLY the command and NO explanation. "
 	prompt += "Do NOT ever use newlines to separate commands, instead use ; or &&. "
-	prompt += "If you cannot generate a command with success, always add '[GF]' at the beginning of you response."
+	prompt += fmt.Sprintf("If your response does not return a command I can execute, ALWAYS add %s at the beginning of you response.", error_flag)
 
 	return prompt
 }

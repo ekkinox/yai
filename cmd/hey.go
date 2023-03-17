@@ -32,7 +32,7 @@ var heyCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		genSpinner := spinner.New(spinner.CharSets[21], 100*time.Millisecond)
-		genSpinner.Suffix = " generating command ..."
+		genSpinner.Suffix = " let me think ..."
 
 		client, err := openai.InitClient(cfg)
 		if err != nil {
@@ -42,7 +42,7 @@ var heyCmd = &cobra.Command{
 
 		genSpinner.Start()
 
-		genCmd, err := client.Send(strings.Join(args, " "))
+		genValid, genCmd, err := client.Send(strings.Join(args, " "))
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -50,10 +50,17 @@ var heyCmd = &cobra.Command{
 
 		genSpinner.Stop()
 
-		color.Blue(genCmd)
+		if !genValid {
+			color.Red(genCmd)
+			color.Red("Command execution cancelled.")
+			os.Exit(0)
+		}
+
+		fmt.Print("I am about to execute: ")
+		color.Yellow("`" + genCmd + "`")
 
 		prompt := promptui.Prompt{
-			Label:     "Apply",
+			Label:     "Confirm",
 			IsConfirm: true,
 		}
 
