@@ -11,7 +11,7 @@ import (
 )
 
 const OS_linux = "linux"
-const OS_darwin = "darwin"
+const OS_darwin = "macOS"
 const OS_windows = "windows"
 const OS_other = "other"
 

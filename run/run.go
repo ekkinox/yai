@@ -10,12 +10,12 @@ func Run(cmd string, arg ...string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return string(out), nil
 }
 
 func RunInteractive(cmd string) error {
 	run := exec.Command("bash", "-c", cmd)
-
 	run.Stdin = os.Stdin
 	run.Stdout = os.Stdout
 	run.Stderr = os.Stderr

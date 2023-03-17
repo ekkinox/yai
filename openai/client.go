@@ -74,7 +74,7 @@ func (c *Client) Send(input string) (string, error) {
 
 func (c *Client) buildSystemPrompt() string {
 	prompt := "You are a helpful command line assistant. "
-	prompt += "You will generate commands based on user input. "
+	prompt += "You will ONLY generate commands based on user input. "
 
 	if c.Config.System.OperatingSystem != detect.OS_other {
 		prompt += fmt.Sprintf("The operating system is %s. ", c.Config.System.OperatingSystem)
@@ -93,7 +93,8 @@ func (c *Client) buildSystemPrompt() string {
 	}
 
 	prompt += "Your response should contain ONLY the command and NO explanation. "
-	prompt += "Do NOT ever use newlines to separate commands, instead use ; or &&."
+	prompt += "Do NOT ever use newlines to separate commands, instead use ; or &&. "
+	prompt += "If you cannot generate a command with success, always add '[GF]' at the beginning of you response."
 
 	return prompt
 }
