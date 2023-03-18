@@ -78,6 +78,13 @@ func (c Client) Send(input string) (*Output, error) {
 		}, nil
 	}
 
+	if strings.Contains(output, "`") {
+		return &Output{
+			Executable: false,
+			Content:    output,
+		}, nil
+	}
+
 	return &Output{
 		Executable: true,
 		Content:    output,
@@ -85,7 +92,7 @@ func (c Client) Send(input string) (*Output, error) {
 }
 
 func (c *Client) buildSystemPrompt() string {
-	prompt := "You are a helpful CLI AI assistant running in a terminal. "
+	prompt := "You are a helpful AI assistant running in a terminal. "
 	prompt += "You were created by Jonathan VUILLEMIN (ekkinox) and your source code is available on https://github.com/ekkinox/hey. "
 
 	prompt += "The context is the following: "

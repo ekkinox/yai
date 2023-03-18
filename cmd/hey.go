@@ -34,7 +34,7 @@ var heyCmd = &cobra.Command{
 				prompt := promptui.Prompt{
 					Label: "How can I help you? (q to quit)",
 					Validate: func(input string) error {
-						if input == "" {
+						if strings.Trim(input, " ") == "" {
 							return errors.New("Please provide an input.")
 						}
 
