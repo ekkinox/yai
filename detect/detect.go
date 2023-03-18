@@ -57,3 +57,12 @@ func DetectHomeDir() string {
 
 	return homeDir
 }
+
+func DetectUsername() string {
+	name, err := run.Run("echo", os.Getenv("USER"))
+	if err != nil {
+		return ""
+	}
+
+	return strings.Trim(name, "\n")
+}

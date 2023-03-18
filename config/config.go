@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/ekkinox/hey/detect"
+	"github.com/fatih/color"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/viper"
 	"os"
 )
@@ -23,6 +25,7 @@ type SystemConfig struct {
 	Distribution    string
 	Shell           string
 	HomeDir         string
+	Username        string
 }
 
 type OpenAIConfig struct {
@@ -31,33 +34,43 @@ type OpenAIConfig struct {
 	Model string
 }
 
-func InitConfig(cfgFile string) Config {
-
-	viper.SetDefault(env_openai_url, "https://api.openai.com/v1/chat/completions")
-	viper.SetDefault(env_openai_model, "gpt-4.0-turbo")
+func InitConfig() Config {
 
 	homeDir := detect.DetectHomeDir()
+	username := detect.DetectUsername()
 
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
-		viper.SetConfigName("hey")
-		viper.AddConfigPath(fmt.Sprintf("%s/.config/", homeDir))
-	}
+	viper.SetDefault(env_openai_url, "https://api.openai.com/v1/chat/completions")
+	viper.SetDefault(env_openai_model, "gpt-3.5-turbo")
+
+	viper.SetConfigName("hey")
+	viper.AddConfigPath(fmt.Sprintf("%s/.config/", homeDir))
 
 	if err := viper.ReadInConfig(); err != nil {
+
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			newCfgFile := fmt.Sprintf("%s/.config/hey.yaml", homeDir)
-			fmt.Printf("Creating config file in: %s, please update your %s before running again.", newCfgFile, env_openai_key)
-			viper.Set(env_openai_key, Openai_Key_Placeholder)
-			err = viper.SafeWriteConfigAs(newCfgFile)
+
+			fmt.Printf("Hey %s!\nApparently it is the first time you ask for my help, and for this I will need an OpenAI API key.\n", username)
+			prompt := promptui.Prompt{
+				Label: "OpenAI API key",
+			}
+			key, err := prompt.Run()
 			if err != nil {
-				fmt.Println(err)
+				color.HiRed("Cannot read key.", err)
 				os.Exit(1)
 			}
-			os.Exit(0)
+
+			viper.Set(env_openai_key, key)
+
+			newCfgFile := fmt.Sprintf("%s/.config/hey.json", homeDir)
+			fmt.Printf("Creating config file in: %s.\n\n", newCfgFile)
+
+			err = viper.SafeWriteConfigAs(newCfgFile)
+			if err != nil {
+				color.HiRed("Cannot save config file.", err)
+				os.Exit(1)
+			}
 		} else {
-			fmt.Println("Can't read config:", err)
+			color.HiRed("Cannot read config.", err)
 			os.Exit(1)
 		}
 	}
@@ -68,6 +81,7 @@ func InitConfig(cfgFile string) Config {
 			Distribution:    detect.DetectDistribution(),
 			Shell:           detect.DetectShell(),
 			HomeDir:         homeDir,
+			Username:        username,
 		},
 		OpenAI: OpenAIConfig{
 			Url:   viper.GetString(env_openai_url),
