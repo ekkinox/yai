@@ -7,23 +7,20 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/ekkinox/hey/config"
 	"github.com/ekkinox/hey/detect"
 )
 
+type Client struct {
+	Messages []Message
+	Config   config.Config
+}
+
 type Message struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
-}
-
-type MessageList struct {
-	Messages []Message `json:"messages"`
-}
-
-type Client struct {
-	History MessageList
-	Config  config.Config
 }
 
 type Output struct {
@@ -31,24 +28,23 @@ type Output struct {
 	Content    string
 }
 
-func InitClient(cfg config.Config) Client {
+func InitClient(cfg config.Config) *Client {
 
-	return Client{MessageList{}, cfg}
+	return &Client{[]Message{}, cfg}
 }
 
-func (c Client) Reset() Client {
-	c.History = MessageList{}
+func (c *Client) Reset() *Client {
+	c.Messages = []Message{}
 
 	return c
 }
 
-func (c Client) Send(input string) (*Output, error) {
+func (c *Client) Send(input string) (*Output, error) {
 
 	payload := fmt.Sprintf(
-		`{"model":"%s","temperature":0.2,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}`,
+		`{"model":"%s","temperature":0.2,"messages":%s}`,
 		c.Config.OpenAI.Model,
-		c.buildSystemPrompt(),
-		input,
+		c.buildMessagesPayload(input),
 	)
 
 	req, err := http.NewRequest(http.MethodPost, c.Config.OpenAI.Url, bytes.NewReader([]byte(payload)))
@@ -58,7 +54,7 @@ func (c Client) Send(input string) (*Output, error) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Config.OpenAI.Key))
 
-	client := &http.Client{}
+	client := &http.Client{Timeout: 15 * time.Second}
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
@@ -88,31 +84,52 @@ func (c Client) Send(input string) (*Output, error) {
 		return nil, err
 	}
 
+	c.Messages = append(c.Messages, Message{Role: "user", Content: input})
+	c.Messages = append(c.Messages, Message{Role: "assistant", Content: data.Choices[0].Message.Content})
+
 	output := strings.Trim(data.Choices[0].Message.Content, "\n")
 
-	if output[0:1] == "[" && output[len(output)-1:] == "]" {
-
-		output = strings.TrimPrefix(output, "[")
-		output = strings.TrimSuffix(output, "]")
-
+	if strings.Contains(output, "OUTSPEECH") {
 		return &Output{
-			Executable: true,
-			Content:    output,
+			Executable: false,
+			Content:    strings.ReplaceAll(output, "OUTSPEECH", "=>"),
 		}, nil
 	}
 
 	return &Output{
-		Executable: false,
+		Executable: true,
 		Content:    output,
 	}, nil
 }
 
+func (c *Client) buildMessagesPayload(input string) string {
+
+	messages := []Message{
+		{
+			Role:    "system",
+			Content: c.buildSystemPrompt(),
+		},
+	}
+
+	for _, m := range c.Messages {
+		messages = append(messages, m)
+	}
+
+	messages = append(messages, Message{Role: "user", Content: input})
+
+	payload, err := json.Marshal(messages)
+	if err != nil {
+		return ""
+	}
+
+	return string(payload)
+}
+
 func (c *Client) buildSystemPrompt() string {
 	prompt := "You are Hey, a AI command line assistant running in a terminal, created by Jonathan VUILLEMIN (ekkinox). "
-	prompt += "You will ALWAYS try to answer to the user input with ONLY a single line command line, WITHOUT any explanation nor assumption, ALWAYS surrounded by the characters [ and ], and using separators like ; or &&. "
+	prompt += "You will ALWAYS try to answer to the user input with ONLY a single line command line, WITHOUT any explanation and using separators like ; or &&. "
 
 	prompt += "The context is the following: "
-
 	if c.Config.System.OperatingSystem != detect.OS_other {
 		prompt += fmt.Sprintf("the operating system is %s, ", c.Config.System.OperatingSystem)
 	}
@@ -128,10 +145,9 @@ func (c *Client) buildSystemPrompt() string {
 	if c.Config.System.OperatingSystem != "" {
 		prompt += fmt.Sprintf("the home directory is %s, ", c.Config.System.HomeDir)
 	}
-
 	prompt += "reply accordingly. "
 
-	prompt += "If you really cannot answer with a command line, reply with ONLY your answer EVEN if it is not a command line."
+	prompt += "If you cannot answer with a single command line, reply with ONLY your answer prefixed with OUTSPEECH, EVEN if it is not a command line or if you try to correct a previous answer."
 
 	return prompt
 }

@@ -18,6 +18,7 @@ import (
 )
 
 var cfg config.Config
+var client *openai.Client
 
 func init() {
 	cobra.OnInitialize(Initialize)
@@ -66,6 +67,7 @@ var heyCmd = &cobra.Command{
 
 func Initialize() {
 	cfg = config.InitConfig()
+	client = openai.InitClient(cfg)
 }
 
 func Execute() {
@@ -79,8 +81,6 @@ func Process(input string) error {
 	genSpinner := spinner.New(spinner.CharSets[21], 100*time.Millisecond)
 	genSpinner.Suffix = " let me think ..."
 	genSpinner.Start()
-
-	client := openai.InitClient(cfg)
 
 	output, err := client.Send(input)
 	if err != nil {
@@ -96,7 +96,7 @@ func Process(input string) error {
 		return nil
 	}
 
-	fmt.Print("I plan to run: ")
+	fmt.Print("=> I plan to run: ")
 	color.HiYellow("`" + output.Content + "`")
 
 	prompt := promptui.Prompt{
