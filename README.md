@@ -10,12 +10,12 @@ go build -o hey
 
 ## Usage
 
-You can run a single request:
-```shell
-hey list all my files in my home directory
-```
-
-Or, you can use the interactive mode:
+Simply run:
 ```shell
 hey
+```
+
+You can also run a single request:
+```shell
+hey list all my files in my home directory
 ```
