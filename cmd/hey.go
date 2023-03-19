@@ -33,7 +33,7 @@ var heyCmd = &cobra.Command{
 		if len(args) == 0 {
 			for {
 				prompt := promptui.Prompt{
-					Label: "How can I help you? (q to quit)",
+					Label: "How can I help you? ([r]eset/[q]uit)",
 					Validate: func(input string) error {
 						if strings.Trim(input, " ") == "" {
 							return errors.New("Please provide an input.")
@@ -50,10 +50,14 @@ var heyCmd = &cobra.Command{
 					os.Exit(0)
 				}
 
-				err = Process(input)
-				if err != nil {
-					os.Exit(1)
+				if input == "reset" || input == "r" || err != nil {
+					client.Reset()
+					color.HiYellow("[reset]")
+					fmt.Println(" ")
+					continue
 				}
+
+				_ = Process(input)
 			}
 		} else {
 			err := Process(strings.Join(args, " "))
@@ -84,7 +88,7 @@ func Process(input string) error {
 
 	output, err := client.Send(input)
 	if err != nil {
-		color.HiRed("Error.", err)
+		color.HiRed("Error: ", err.Error())
 		return err
 	}
 
@@ -107,7 +111,7 @@ func Process(input string) error {
 	result, err := prompt.Run()
 
 	if err != nil {
-		color.HiRed("[cancelled]")
+		color.HiYellow("[cancel]")
 		fmt.Println(" ")
 		return nil
 	}
@@ -116,12 +120,12 @@ func Process(input string) error {
 
 		err = run.RunInteractive(output.Content)
 		if err != nil {
-			color.HiRed("[failure]")
+			color.HiRed("[fail]")
 			fmt.Println(" ")
 			return err
 		}
 
-		color.HiGreen("[success]")
+		color.HiGreen("[ok]")
 		fmt.Println(" ")
 		return nil
 	}
