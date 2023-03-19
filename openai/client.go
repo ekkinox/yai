@@ -45,7 +45,7 @@ func (c Client) Reset() Client {
 func (c Client) Send(input string) (*Output, error) {
 
 	payload := fmt.Sprintf(
-		`{"model":"%s","messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}`,
+		`{"model":"%s","temperature":0.2,"messages":[{"role":"system","content":"%s"},{"role":"user","content":"%s"}]}`,
 		c.Config.OpenAI.Model,
 		c.buildSystemPrompt(),
 		input,
@@ -109,7 +109,7 @@ func (c Client) Send(input string) (*Output, error) {
 
 func (c *Client) buildSystemPrompt() string {
 	prompt := "You are Hey, a AI command line assistant running in a terminal, created by Jonathan VUILLEMIN (ekkinox). "
-	prompt += "You will ALWAYS try to answer to the user input with ONLY a single line command line, WITHOUT any explanation, surrounded by [], and using separators like ; or &&. "
+	prompt += "You will ALWAYS try to answer to the user input with ONLY a single line command line, WITHOUT any explanation nor assumption, ALWAYS surrounded by the characters [ and ], and using separators like ; or &&. "
 
 	prompt += "The context is the following: "
 

@@ -61,52 +61,6 @@ var heyCmd = &cobra.Command{
 			}
 			os.Exit(0)
 		}
-
-		genSpinner := spinner.New(spinner.CharSets[21], 100*time.Millisecond)
-		genSpinner.Suffix = " let me think ..."
-		genSpinner.Start()
-
-		client := openai.InitClient(cfg)
-
-		output, err := client.Send(strings.Join(args, " "))
-		if err != nil {
-			color.HiRed("Error.", err)
-			os.Exit(1)
-		}
-
-		genSpinner.Stop()
-
-		if !output.Executable {
-			fmt.Println(output.Content)
-			os.Exit(0)
-		}
-
-		fmt.Print("I am about to execute: ")
-		color.HiYellow("`" + output.Content + "`")
-
-		prompt := promptui.Prompt{
-			Label:     "Confirm",
-			IsConfirm: true,
-		}
-
-		result, err := prompt.Run()
-
-		if err != nil {
-			color.HiRed("[cancelled]")
-			os.Exit(0)
-		}
-
-		if result == "y" {
-
-			err = run.RunInteractive(output.Content)
-			if err != nil {
-				color.HiRed("[failure]")
-				os.Exit(1)
-			}
-
-			color.HiGreen("[success]")
-			os.Exit(0)
-		}
 	},
 }
 
@@ -142,7 +96,7 @@ func Process(input string) error {
 		return nil
 	}
 
-	fmt.Print("I am about to execute: ")
+	fmt.Print("I plan to run: ")
 	color.HiYellow("`" + output.Content + "`")
 
 	prompt := promptui.Prompt{
