@@ -12,14 +12,18 @@ import (
 	"github.com/ekkinox/hey/detect"
 )
 
-const output_speech_flag = "OUTSPEECH"
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
 
-type Response struct {
-	Choices []struct {
-		Message struct {
-			Content string `json:"content"`
-		} `json:"message"`
-	} `json:"choices"`
+type MessageList struct {
+	Messages []Message `json:"messages"`
+}
+
+type Client struct {
+	History MessageList
+	Config  config.Config
 }
 
 type Output struct {
@@ -27,12 +31,15 @@ type Output struct {
 	Content    string
 }
 
-type Client struct {
-	Config config.Config
+func InitClient(cfg config.Config) Client {
+
+	return Client{MessageList{}, cfg}
 }
 
-func InitClient(cfg config.Config) Client {
-	return Client{cfg}
+func (c Client) Reset() Client {
+	c.History = MessageList{}
+
+	return c
 }
 
 func (c Client) Send(input string) (*Output, error) {
@@ -53,17 +60,29 @@ func (c Client) Send(input string) (*Output, error) {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
+	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error during api call, code %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	var data Response
+	type apiResponse struct {
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+
+	var data apiResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		return nil, err
@@ -71,29 +90,26 @@ func (c Client) Send(input string) (*Output, error) {
 
 	output := strings.Trim(data.Choices[0].Message.Content, "\n")
 
-	if strings.Contains(output, output_speech_flag) {
-		return &Output{
-			Executable: false,
-			Content:    strings.Trim(strings.ReplaceAll(output, output_speech_flag, ""), " "),
-		}, nil
-	}
+	if output[0:1] == "[" && output[len(output)-1:] == "]" {
 
-	if strings.Contains(output, "`") {
+		output = strings.TrimPrefix(output, "[")
+		output = strings.TrimSuffix(output, "]")
+
 		return &Output{
-			Executable: false,
+			Executable: true,
 			Content:    output,
 		}, nil
 	}
 
 	return &Output{
-		Executable: true,
+		Executable: false,
 		Content:    output,
 	}, nil
 }
 
 func (c *Client) buildSystemPrompt() string {
-	prompt := "You are a helpful AI assistant running in a terminal. "
-	prompt += "You were created by Jonathan VUILLEMIN (ekkinox) and your source code is available on https://github.com/ekkinox/hey. "
+	prompt := "You are Hey, a AI command line assistant running in a terminal, created by Jonathan VUILLEMIN (ekkinox). "
+	prompt += "You will ALWAYS try to answer to the user input with ONLY a single line command line, WITHOUT any explanation, surrounded by [], and using separators like ; or &&. "
 
 	prompt += "The context is the following: "
 
@@ -113,10 +129,9 @@ func (c *Client) buildSystemPrompt() string {
 		prompt += fmt.Sprintf("the home directory is %s, ", c.Config.System.HomeDir)
 	}
 
-	prompt += "use this context create the most relevant commands. "
+	prompt += "reply accordingly. "
 
-	prompt += "You will always reply with a command (without new lines, and with separators like ; or &&), without giving any explanation or details, to perform exactly what is asked in user input. "
-	prompt += fmt.Sprintf("If you cannot reply by a command, prefix your response with %s and provide the best help possible.", output_speech_flag)
+	prompt += "If you really cannot answer with a command line, reply with ONLY your answer EVEN if it is not a command line."
 
 	return prompt
 }
