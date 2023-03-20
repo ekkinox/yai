@@ -55,6 +55,7 @@ func (c *Client) Send(input string) (*Output, error) {
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.Config.OpenAI.Key))
 
 	client := &http.Client{Timeout: 15 * time.Second}
+
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {

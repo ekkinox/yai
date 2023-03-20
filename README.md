@@ -1,21 +1,23 @@
 # Hey
 
-> AI powered CLI helper.
+> Your AI powered CLI assistant.
 
-## Build
+## Installation 
 
 ```shell
-go build -o hey
+sudo go build -o /usr/local/bin/hey
 ```
+
+At the first execution, you assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
 
 ## Usage
 
-Simply run:
+To interact with your assistant:
 ```shell
 hey
 ```
 
-You can also run a single request:
+You can also ask for a single shot:
 ```shell
 hey list all my files in my home directory
 ```
