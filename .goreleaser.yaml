@@ -1,0 +1,44 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    - go mod tidy
+
+gomod:
+  proxy: true
+
+builds:
+- env: ["CGO_ENABLED=0"]
+  mod_timestamp: '{{ .CommitTimestamp }}'
+  flags: ["-trimpath"]
+  ldflags: ["-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }}"]
+  targets: ["go_first_class"]
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - '^chore'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
+  groups:
+    - title: 'New Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 10
+    - title: Other work
+      order: 999
+
+release:
+  footer: |
+
+    ---
+
+    _Released with [GoReleaser](https://goreleaser.com)!_

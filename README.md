@@ -1,23 +1,19 @@
-# Hey
+# bubbletea-app-template
 
-> Your AI powered CLI assistant.
+A template repository to create [Bubbletea][bubbletea] apps.
 
-## Installation 
+## Included
 
-```shell
-sudo go build -o /usr/local/bin/hey
-```
+- a sample app that does nothing, so it includes all dependencies:
+	- [bubbletea][]
+	- [bubbles][]
+	- [lipgloss][]
+- github actions workflows for build, test, lint and release
+- [GoReleaser][goreleaser] configs
+- [golangci-lint][lint] configs
 
-At the first execution, you assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
-
-## Usage
-
-To interact with your assistant:
-```shell
-hey
-```
-
-You can also ask for a single shot:
-```shell
-hey list all my files in my home directory
-```
+[bubbletea]: https://github.com/charmbracelet/bubbletea
+[bubbles]: https://github.com/charmbracelet/bubbles
+[lipgloss]: https://github.com/charmbracelet/lipgloss
+[goreleaser]: https://goreleaser.com
+[lint]: https://golangci-lint.run
