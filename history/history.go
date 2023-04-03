@@ -31,7 +31,7 @@ func (h *History) Add(input string) *History {
 }
 
 func (h *History) Previous() *string {
-	if input, ok := h.inputs[h.cursor-1]; ok {
+	if input, ok := h.inputs[h.cursor]; ok {
 		h.cursor--
 		return &input
 	}

@@ -1,7 +1,10 @@
 package runner
 
 import (
+	"fmt"
+	"log"
 	"os/exec"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -15,16 +18,32 @@ func (o RunnerOutput) GetError() error {
 }
 
 type Runner struct {
-	dummy string
+	config string
 }
 
 func NewRunner() *Runner {
-	return &Runner{"run"}
+	return &Runner{"config"}
 }
 
-func (r *Runner) RunCommand(input string) tea.Cmd {
+func (r *Runner) RunInteractive(input string) tea.Cmd {
+
+	time.Sleep(time.Millisecond)
+
 	c := exec.Command("bash", "-c", input)
+
 	return tea.ExecProcess(c, func(error error) tea.Msg {
 		return RunnerOutput{error}
 	})
+}
+
+func (r *Runner) Run(cmd string, arg ...string) (string, error) {
+	out, err := exec.Command(cmd, arg...).Output()
+	if err != nil {
+		message := fmt.Sprintf("error: %v", err)
+		log.Println(message)
+
+		return message, err
+	}
+
+	return string(out), nil
 }

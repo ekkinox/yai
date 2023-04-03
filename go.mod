@@ -1,11 +1,12 @@
 module github.com/ekkinox/yo
 
-go 1.20
+go 1.19
 
 require (
 	github.com/charmbracelet/bubbles v0.15.0
 	github.com/charmbracelet/bubbletea v0.23.2
 	github.com/charmbracelet/glamour v0.6.0
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/sashabaranov/go-openai v1.5.7
 )
 

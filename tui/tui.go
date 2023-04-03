@@ -3,15 +3,14 @@ package tui
 import (
 	"errors"
 	"fmt"
+	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
 	"github.com/ekkinox/yo/engine"
 	"github.com/ekkinox/yo/history"
 	"github.com/ekkinox/yo/runner"
 	"github.com/ekkinox/yo/tui/components"
 	"log"
-
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/glamour"
 )
 
 type TuiState struct {
@@ -28,15 +27,14 @@ type TuiComponents struct {
 type Tui struct {
 	state      TuiState
 	components TuiComponents
-	history    *history.History
 	engine     *engine.Engine
 	runner     *runner.Runner
+	history    *history.History
 }
 
 func NewTui() *Tui {
-	i := textinput.New()
-	i.Placeholder = "Enter something"
-	i.Focus()
+
+	defaultEngineMode := engine.ChatEngineMode
 
 	return &Tui{
 		state: TuiState{
@@ -45,20 +43,23 @@ func NewTui() *Tui {
 			error:   nil,
 		},
 		components: TuiComponents{
-			prompt: components.NewPrompt(),
+			prompt: components.NewPrompt(defaultEngineMode),
 			renderer: components.NewRenderer(
 				glamour.WithAutoStyle(),
 				glamour.WithWordWrap(100),
 			),
 		},
-		history: history.NewHistory(),
-		engine:  engine.NewEngine(),
+		engine:  engine.NewEngine(defaultEngineMode),
 		runner:  runner.NewRunner(),
+		history: history.NewHistory(),
 	}
 }
 
 func (t *Tui) Init() tea.Cmd {
-	return nil
+	return tea.Batch(
+		tea.ClearScreen,
+		textinput.Blink,
+	)
 }
 
 func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -73,31 +74,77 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return t, tea.Quit
-		case tea.KeyEnter:
-			input := t.components.prompt.Value()
-			t.history.Add(input)
+		case tea.KeyUp, tea.KeyDown:
+			if !t.state.running {
+				var input *string
+				if msg.Type == tea.KeyUp {
+					input = t.history.Previous()
+				} else {
+					input = t.history.Next()
+				}
+				if input != nil {
+					t.components.prompt.SetValue(*input)
+					t.components.prompt, promptCmd = t.components.prompt.Update(msg)
+					cmds = append(
+						cmds,
+						promptCmd,
+					)
+				}
+			}
+		case tea.KeyTab:
+			if t.engine.GetMode() == engine.ChatEngineMode {
+				t.engine.SetMode(engine.RunEngineMode)
+				t.components.prompt = components.UpdatePrompt(t.components.prompt, engine.RunEngineMode)
+			} else {
+				t.engine.SetMode(engine.ChatEngineMode)
+				t.components.prompt = components.UpdatePrompt(t.components.prompt, engine.ChatEngineMode)
+			}
+			t.engine.Reset()
 			t.components.prompt, promptCmd = t.components.prompt.Update(msg)
 			cmds = append(
 				cmds,
 				promptCmd,
-				tea.Printf("\n> %s\n", input),
+				textinput.Blink,
+			)
+		case tea.KeyEnter:
+			input := t.components.prompt.Value()
+			t.history.Add(input)
+			t.components.prompt.SetValue("")
+			t.components.prompt, promptCmd = t.components.prompt.Update(msg)
+			cmds = append(
+				cmds,
+				promptCmd,
+				tea.Println(components.RenderPromptText(input, t.engine.GetMode())),
 				t.startEngine(input),
 				t.awaitEngine(),
 			)
 		case tea.KeyCtrlR:
+			t.state.running = true
 			input := t.components.prompt.Value()
 			t.history.Add(input)
+			t.components.prompt.SetValue("")
+			t.components.prompt, promptCmd = t.components.prompt.Update(msg)
+			return t, tea.Sequence(
+				promptCmd,
+				tea.Println(components.RenderPromptText(input, t.engine.GetMode())),
+				t.runner.RunInteractive(input),
+			)
+		case tea.KeyCtrlL:
+			t.history.Reset()
+			t.engine.Reset()
 			t.components.prompt, promptCmd = t.components.prompt.Update(msg)
 			cmds = append(
 				cmds,
 				promptCmd,
-				t.runner.RunCommand(input),
+				tea.ClearScreen,
+				textinput.Blink,
 			)
 		default:
 			t.components.prompt, promptCmd = t.components.prompt.Update(msg)
 			cmds = append(
 				cmds,
 				promptCmd,
+				textinput.Blink,
 			)
 		}
 	case engine.EngineOutput:
@@ -107,18 +154,24 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return t, tea.Sequence(
 				promptCmd,
 				tea.Printf(t.components.renderer.Render(t.state.buffer)),
+				textinput.Blink,
 			)
 		} else {
 			return t, t.awaitEngine()
 		}
 	case runner.RunnerOutput:
+		t.state.running = false
 		if msg.GetError() != nil {
 			t.state.error = msg.GetError()
 			return t, tea.Quit
 		}
 		t.components.prompt.Focus()
 		t.components.prompt, promptCmd = t.components.prompt.Update(msg)
-		return t, promptCmd
+		cmds = append(
+			cmds,
+			promptCmd,
+			textinput.Blink,
+		)
 
 	case error:
 		t.state.error = msg
@@ -163,6 +216,7 @@ func (t *Tui) startEngine(input string) tea.Cmd {
 func (t *Tui) awaitEngine() tea.Cmd {
 	return func() tea.Msg {
 		var output engine.EngineOutput
+
 		output = <-t.engine.Channel()
 		t.state.buffer += output.GetContent()
 		t.state.running = !output.IsLast()

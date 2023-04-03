@@ -26,14 +26,16 @@ type Engine struct {
 	client   *openai.Client
 	messages []openai.ChatCompletionMessage
 	channel  chan EngineOutput
+	mode     EngineMode
 	running  bool
 }
 
-func NewEngine() *Engine {
+func NewEngine(mode EngineMode) *Engine {
 	return &Engine{
 		client:   openai.NewClient("xxx"),
 		messages: make([]openai.ChatCompletionMessage, 0),
 		channel:  make(chan EngineOutput),
+		mode:     mode,
 		running:  false,
 	}
 }
@@ -59,6 +61,16 @@ func (e *Engine) Reset() *Engine {
 	return e
 }
 
+func (e *Engine) SetMode(mode EngineMode) *Engine {
+	e.mode = mode
+
+	return e
+}
+
+func (e *Engine) GetMode() EngineMode {
+	return e.mode
+}
+
 func (e *Engine) StreamChatCompletion(input string) error {
 
 	ctx := context.Background()
@@ -70,7 +82,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 	req := openai.ChatCompletionRequest{
 		Model:     openai.GPT3Dot5Turbo,
 		MaxTokens: 1000,
-		Messages:  e.messages,
+		Messages:  e.prepareCompletionMessages(),
 		Stream:    true,
 	}
 
@@ -138,4 +150,34 @@ func (e *Engine) appendAssistantMessage(content string) *Engine {
 	})
 
 	return e
+}
+
+func (e *Engine) prepareCompletionMessages() []openai.ChatCompletionMessage {
+	messages := []openai.ChatCompletionMessage{
+		{
+			Role:    openai.ChatMessageRoleSystem,
+			Content: e.prepareSystemMessageContent(),
+		},
+	}
+	for _, m := range e.messages {
+		messages = append(messages, m)
+	}
+
+	return messages
+}
+
+func (e *Engine) prepareSystemMessageContent() string {
+	prompt := "You are Yo, an helpful AI command line assistant running in a terminal, created by Jonathan VUILLEMIN (github.com/ekkinox). "
+
+	switch e.mode {
+	case ChatEngineMode:
+		prompt += "You will provide an answer for my input the most helpful possible, rendered in markdown format. "
+	case RunEngineMode:
+		prompt += "You will always return ONLY a single command line that fulfills my input, without any explanation or descriptive text. "
+		prompt += "This command line cannot have new lines, use instead separators like && and ;. "
+	}
+
+	prompt += "My operating system is linux, my distribution is Fedora release 37 (Thirty Seven), my home directory is /home/jonathan, my shell is zsh."
+
+	return prompt
 }
