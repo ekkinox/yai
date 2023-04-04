@@ -16,26 +16,31 @@ Yo provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
 - CLI: command line interface, made to run a single execution
 
-Launch with TUI mode:
+#### TUI mode
+
 ```shell
 yo
 ```
 
-Launch with CLI mode:
+This will open a REPL loop, where you can use the following shortcuts:
+
+| Keys     | Description                                     |
+|----------|-------------------------------------------------|
+| `↑` `↓`  | Navigate in history                             |
+| `tab`    | Switch between 💬 `chat` or 🚀 `run` modes      |
+| `ctrl+l` | Clear terminal but keep discussion history      |
+| `ctrl+r` | Clear terminal and reset discussion history     |
+| `ctrl+s` | Edit settings                                   |
+| `ctrl+c` | Exit or interrupt current command or completion |
+
+
+#### CLI mode
+
 ```shell
 yo list all my files in my home directory
 ```
 
-### Keyboard shortcuts
-
-| Keys     | Description                                     |
-|----------|-------------------------------------------------|
-| `↑` `↓`  | Navigate history                                |
-| `tab`    | Switch between `chat` or `run` modes            |
-| `ctrl+l` | Clear terminal but keep discussion history      |
-| `ctrl+s` | Edit settings                                   |
-| `ctrl+c` | Exit or interrupt current command or completion |
-
+This will perform a single execution, according to your input.
 
 ## Configuration
 
@@ -43,11 +48,11 @@ At the first execution, your assistant will ask you to provide an [OpenAI API ke
 
 It will then generate your configuration in the file `~/.config/yo.json`, and will have the following structure:
 
-```json
+```JS
 {
   "openai_key": "sk-xxxxxxxxx", // your OpenAI API key
   "openai_temperature": 0.2,    // chatGPT temperature
-  "user_context": "",           // to express some preferences in natural language
-  "user_default_mode": "chat"   // prefered run mode: [chat] or [run]
+  "user_default_mode": "chat",  // prefered run mode: [chat] or [run]
+  "user_context": ""            // to express some preferences in natural language
 }
 ```
