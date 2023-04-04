@@ -45,6 +45,8 @@ This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%
 
 ### CLI mode
 
+**TODO**: work in progress
+
 ```shell
 yo list all my files in my home directory
 ```
