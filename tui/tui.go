@@ -403,7 +403,7 @@ func (t *Tui) startCommand(input string) tea.Cmd {
 	t.state.running = true
 	t.state.confirming = false
 
-	c := exec.Command("bash", "-c", fmt.Sprintf("%s; echo \"\n\"", input))
+	c := exec.Command("bash", "-c", fmt.Sprintf("%s; echo \"\n\"", strings.TrimRight(input, ";")))
 
 	return tea.ExecProcess(c, func(error error) tea.Msg {
 		t.state.running = false
