@@ -258,7 +258,7 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				t.state.confirming = true
 				t.state.command = t.state.buffer
 				output = t.components.renderer.RenderContent(fmt.Sprintf("`%s`", t.state.buffer))
-				output += fmt.Sprintf("  Confirm execution? [y/N]\n")
+				output += fmt.Sprintf("  Confirm execution? [y/N]")
 				t.components.prompt.Blur()
 			} else {
 				output = t.components.renderer.RenderContent(t.state.buffer)
