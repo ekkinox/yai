@@ -31,7 +31,7 @@ Yo provides 2 UI modes:
 yo
 ```
 
-This will open a REPL loop, where you can use the following shortcuts:
+This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), where you can use the following shortcuts:
 
 | Keys     | Description                                    |
 |----------|------------------------------------------------|
