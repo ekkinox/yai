@@ -10,11 +10,11 @@ import (
 )
 
 type RunnerOutput struct {
-	error error
+	Error error
 }
 
 func (o RunnerOutput) GetError() error {
-	return o.error
+	return o.Error
 }
 
 type Runner struct {
@@ -27,11 +27,12 @@ func NewRunner() *Runner {
 
 func (r *Runner) RunInteractive(input string) tea.Cmd {
 
-	time.Sleep(time.Millisecond)
-
+	time.Sleep(time.Microsecond * 100)
 	c := exec.Command("bash", "-c", input)
 
 	return tea.ExecProcess(c, func(error error) tea.Msg {
+		time.Sleep(time.Microsecond * 100)
+
 		return RunnerOutput{error}
 	})
 }

@@ -14,3 +14,11 @@ func (m EngineMode) String() string {
 		return "run"
 	}
 }
+
+func EngineModeFromString(mode string) EngineMode {
+	if mode == "run" {
+		return RunEngineMode
+	} else {
+		return ChatEngineMode
+	}
+}

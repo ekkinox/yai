@@ -1,72 +1,86 @@
 package context
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 	"strings"
 
 	"github.com/ekkinox/yo/runner"
-
 	"github.com/mitchellh/go-homedir"
 )
 
-type ContextOutput struct {
+const app_name = "Yo"
+
+type Context struct {
+	appName         string
 	operatingSystem string
 	distribution    string
 	shell           string
 	homeDirectory   string
 	username        string
 	editor          string
+	configFile      string
 }
 
-func (o *ContextOutput) GetOperatingSystem() string {
+func (o *Context) GetAppName() string {
+	return o.appName
+}
+
+func (o *Context) GetOperatingSystem() string {
 	return o.operatingSystem
 }
 
-func (o *ContextOutput) GetDistribution() string {
+func (o *Context) GetDistribution() string {
 	return o.distribution
 }
 
-func (o *ContextOutput) GetShell() string {
+func (o *Context) GetShell() string {
 	return o.shell
 }
 
-func (o *ContextOutput) GetHomeDirectory() string {
+func (o *Context) GetHomeDirectory() string {
 	return o.homeDirectory
 }
 
-func (o *ContextOutput) GetUsername() string {
+func (o *Context) GetUsername() string {
 	return o.username
 }
 
-func (o *ContextOutput) GetEditor() string {
+func (o *Context) GetEditor() string {
 	return o.editor
 }
 
-type Context struct {
+func (o *Context) GetConfigFile() string {
+	return o.configFile
+}
+
+type ContextAnalyzer struct {
 	config string
 	runner *runner.Runner
 }
 
-func NewContext() *Context {
-	return &Context{
+func NewContextAnalyzer() *ContextAnalyzer {
+	return &ContextAnalyzer{
 		config: "config",
 		runner: runner.NewRunner(),
 	}
 }
 
-func (c *Context) Analyse() ContextOutput {
-	return ContextOutput{
-		operatingSystem: c.GetOperatingSystem().String(),
-		distribution:    c.GetDistribution(),
-		shell:           c.GetShell(),
-		homeDirectory:   c.GetHomeDirectory(),
-		username:        c.GetUsername(),
-		editor:          c.GetEditor(),
+func (a *ContextAnalyzer) Analyse() *Context {
+	return &Context{
+		appName:         app_name,
+		operatingSystem: a.GetOperatingSystem().String(),
+		distribution:    a.GetDistribution(),
+		shell:           a.GetShell(),
+		homeDirectory:   a.GetHomeDirectory(),
+		username:        a.GetUsername(),
+		editor:          a.GetEditor(),
+		configFile:      a.GetConfigFile(),
 	}
 }
 
-func (c *Context) GetOperatingSystem() OperatingSystem {
+func (a *ContextAnalyzer) GetOperatingSystem() OperatingSystem {
 	switch runtime.GOOS {
 	case "linux":
 		return LinuxOperatingSystem
@@ -79,8 +93,8 @@ func (c *Context) GetOperatingSystem() OperatingSystem {
 	}
 }
 
-func (c *Context) GetDistribution() string {
-	dist, err := c.runner.Run("lsb_release", "-sd")
+func (a *ContextAnalyzer) GetDistribution() string {
+	dist, err := a.runner.Run("lsb_release", "-sd")
 	if err != nil {
 		return ""
 	}
@@ -88,8 +102,8 @@ func (c *Context) GetDistribution() string {
 	return strings.Trim(strings.Trim(dist, "\n"), "\"")
 }
 
-func (c *Context) GetShell() string {
-	shell, err := c.runner.Run("echo", os.Getenv("SHELL"))
+func (a *ContextAnalyzer) GetShell() string {
+	shell, err := a.runner.Run("echo", os.Getenv("SHELL"))
 	if err != nil {
 		return ""
 	}
@@ -100,7 +114,7 @@ func (c *Context) GetShell() string {
 
 }
 
-func (c *Context) GetHomeDirectory() string {
+func (a *ContextAnalyzer) GetHomeDirectory() string {
 	homeDir, err := homedir.Dir()
 	if err != nil {
 		return ""
@@ -109,8 +123,8 @@ func (c *Context) GetHomeDirectory() string {
 	return homeDir
 }
 
-func (c *Context) GetUsername() string {
-	name, err := c.runner.Run("echo", os.Getenv("USER"))
+func (a *ContextAnalyzer) GetUsername() string {
+	name, err := a.runner.Run("echo", os.Getenv("USER"))
 	if err != nil {
 		return ""
 	}
@@ -118,11 +132,19 @@ func (c *Context) GetUsername() string {
 	return strings.Trim(name, "\n")
 }
 
-func (c *Context) GetEditor() string {
-	name, err := c.runner.Run("echo", os.Getenv("EDITOR"))
+func (a *ContextAnalyzer) GetEditor() string {
+	name, err := a.runner.Run("echo", os.Getenv("EDITOR"))
 	if err != nil {
 		return "vim"
 	}
 
 	return strings.Trim(name, "\n")
+}
+
+func (a *ContextAnalyzer) GetConfigFile() string {
+	return fmt.Sprintf(
+		"%s/.config/%s.json",
+		a.GetHomeDirectory(),
+		strings.ToLower(app_name),
+	)
 }

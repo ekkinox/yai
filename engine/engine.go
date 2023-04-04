@@ -3,26 +3,37 @@ package engine
 import (
 	"context"
 	"errors"
-	"github.com/sashabaranov/go-openai"
+	"fmt"
+	"github.com/ekkinox/yo/config"
 	"io"
 	"log"
-	"time"
+	"strings"
+
+	"github.com/sashabaranov/go-openai"
 )
 
-type EngineOutput struct {
-	content string
-	last    bool
-}
+const NORUN = "NORUN"
 
-func (d EngineOutput) IsLast() bool {
-	return d.last
+type EngineOutput struct {
+	content    string
+	last       bool
+	executable bool
 }
 
 func (d EngineOutput) GetContent() string {
 	return d.content
 }
 
+func (d EngineOutput) IsLast() bool {
+	return d.last
+}
+
+func (d EngineOutput) IsExecutable() bool {
+	return d.executable
+}
+
 type Engine struct {
+	config   *config.Config
 	client   *openai.Client
 	messages []openai.ChatCompletionMessage
 	channel  chan EngineOutput
@@ -30,12 +41,13 @@ type Engine struct {
 	running  bool
 }
 
-func NewEngine(mode EngineMode) *Engine {
+func NewEngine(config *config.Config) *Engine {
 	return &Engine{
-		client:   openai.NewClient("xxx"),
+		config:   config,
+		client:   openai.NewClient(config.GetOpenAI().GetKey()),
 		messages: make([]openai.ChatCompletionMessage, 0),
 		channel:  make(chan EngineOutput),
-		mode:     mode,
+		mode:     EngineModeFromString(config.GetUserPreferences().GetDefaultMode()),
 		running:  false,
 	}
 }
@@ -46,8 +58,9 @@ func (e *Engine) Channel() chan EngineOutput {
 
 func (e *Engine) Interrupt() *Engine {
 	e.channel <- EngineOutput{
-		content: "\n\nInterrupt !",
-		last:    true,
+		content:    "Interrupt",
+		last:       true,
+		executable: false,
 	}
 
 	e.running = false
@@ -100,9 +113,17 @@ func (e *Engine) StreamChatCompletion(input string) error {
 			resp, err := stream.Recv()
 
 			if errors.Is(err, io.EOF) {
+				executable := false
+				if e.mode == RunEngineMode {
+					if !strings.HasPrefix(output, NORUN) {
+						executable = true
+					}
+				}
+
 				e.channel <- EngineOutput{
-					content: "",
-					last:    true,
+					content:    "",
+					last:       true,
+					executable: executable,
 				}
 				e.running = false
 				e.appendAssistantMessage(output)
@@ -125,7 +146,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 				last:    false,
 			}
 
-			time.Sleep(time.Millisecond * 1)
+			//time.Sleep(time.Microsecond * 100)
 		} else {
 			stream.Close()
 
@@ -167,14 +188,15 @@ func (e *Engine) prepareCompletionMessages() []openai.ChatCompletionMessage {
 }
 
 func (e *Engine) prepareSystemMessageContent() string {
-	prompt := "You are Yo, an helpful AI command line assistant running in a terminal, created by Jonathan VUILLEMIN (github.com/ekkinox). "
+	prompt := "You are Yo, an helpful AI command line assistant running in a terminal, created by github.com/ekkinox. "
 
 	switch e.mode {
 	case ChatEngineMode:
 		prompt += "You will provide an answer for my input the most helpful possible, rendered in markdown format. "
 	case RunEngineMode:
-		prompt += "You will always return ONLY a single command line that fulfills my input, without any explanation or descriptive text. "
+		prompt += "You will prepare a single command line that fulfills my input, and you will NEVER provide any explanation or descriptive text even if you did before in the discussion. "
 		prompt += "This command line cannot have new lines, use instead separators like && and ;. "
+		prompt += fmt.Sprintf("If you do NOT manage to generate a single command line, in this case prefix your answer with %s. ", NORUN)
 	}
 
 	prompt += "My operating system is linux, my distribution is Fedora release 37 (Thirty Seven), my home directory is /home/jonathan, my shell is zsh."

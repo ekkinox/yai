@@ -7,6 +7,18 @@ import (
 	"github.com/ekkinox/yo/engine"
 )
 
+func NewConfigPrompt() textinput.Model {
+
+	prompt := textinput.New()
+	prompt.Placeholder = "Enter your OpenAI key..."
+	prompt.Prompt = "🔒 > "
+	prompt.EchoMode = textinput.EchoPassword
+	prompt.Focus()
+
+	return prompt
+
+}
+
 func NewPrompt(mode engine.EngineMode) textinput.Model {
 
 	prompt := textinput.New()
@@ -22,7 +34,7 @@ func NewPrompt(mode engine.EngineMode) textinput.Model {
 func RenderPromptText(value string, mode engine.EngineMode) string {
 	style := GetPromptStyle(mode)
 
-	return fmt.Sprintf("\n%s%s\n", style.Render(GetPromptIcon(mode)), style.Render(value))
+	return fmt.Sprintf("%s%s\n", style.Render(GetPromptIcon(mode)), style.Render(value))
 }
 
 func UpdatePrompt(prompt textinput.Model, mode engine.EngineMode) textinput.Model {
@@ -34,9 +46,9 @@ func UpdatePrompt(prompt textinput.Model, mode engine.EngineMode) textinput.Mode
 
 func GetPromptIcon(mode engine.EngineMode) string {
 	if mode == engine.ChatEngineMode {
-		return GetPromptStyle(mode).Render("[💬]> ")
+		return GetPromptStyle(mode).Render("💬 > ")
 	} else {
-		return GetPromptStyle(mode).Render("[⚙️ ]> ")
+		return GetPromptStyle(mode).Render("🚀 > ")
 	}
 }
 
