@@ -24,14 +24,14 @@ yo
 
 This will open a REPL loop, where you can use the following shortcuts:
 
-| Keys     | Description                                     |
-|----------|-------------------------------------------------|
-| `↑` `↓`  | Navigate in history                             |
-| `tab`    | Switch between 💬 `chat` or 🚀 `run` modes      |
-| `ctrl+l` | Clear terminal but keep discussion history      |
-| `ctrl+r` | Clear terminal and reset discussion history     |
-| `ctrl+s` | Edit settings                                   |
-| `ctrl+c` | Exit or interrupt current command or completion |
+| Keys     | Description                                    |
+|----------|------------------------------------------------|
+| `↑` `↓`  | Navigate in history                            |
+| `tab`    | Switch between 💬 `chat` or 🚀 `run` modes     |
+| `ctrl+r` | Clear terminal and reset discussion history    |
+| `ctrl+l` | Clear terminal but keep discussion history     |
+| `ctrl+s` | Edit settings                                  |
+| `ctrl+c` | Exit or interrupt current command / completion |
 
 
 #### CLI mode
