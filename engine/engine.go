@@ -199,7 +199,27 @@ func (e *Engine) prepareSystemMessageContent() string {
 		prompt += fmt.Sprintf("If you do NOT manage to generate a single command line, in this case prefix your answer with %s. ", NORUN)
 	}
 
-	prompt += "My operating system is linux, my distribution is Fedora release 37 (Thirty Seven), my home directory is /home/jonathan, my shell is zsh."
+	prompt += "My context: "
+	if e.config.GetContext().GetOperatingSystem() != "other" {
+		prompt += fmt.Sprintf("my operating system is %s, ", e.config.GetContext().GetOperatingSystem())
+	}
+	if e.config.GetContext().GetDistribution() != "" {
+		prompt += fmt.Sprintf("my distribution is %s, ", e.config.GetContext().GetDistribution())
+	}
+	if e.config.GetContext().GetHomeDirectory() != "" {
+		prompt += fmt.Sprintf("my home directory is %s, ", e.config.GetContext().GetHomeDirectory())
+	}
+	if e.config.GetContext().GetShell() != "" {
+		prompt += fmt.Sprintf("my shell is %s, ", e.config.GetContext().GetShell())
+	}
+	if e.config.GetContext().GetShell() != "" {
+		prompt += fmt.Sprintf("my editor is %s, ", e.config.GetContext().GetEditor())
+	}
+	prompt += "take this into account. "
+
+	if e.config.GetUserPreferences().GetContext() != "" {
+		prompt += fmt.Sprintf("Also, %s ", e.config.GetUserPreferences().GetContext())
+	}
 
 	return prompt
 }

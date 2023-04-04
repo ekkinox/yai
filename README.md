@@ -5,7 +5,7 @@
 ## Installation
 
 ```shell
-sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
+go get && go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 ```
 
 At the first execution, your assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
