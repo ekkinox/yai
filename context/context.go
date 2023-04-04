@@ -135,7 +135,7 @@ func (a *ContextAnalyzer) GetUsername() string {
 func (a *ContextAnalyzer) GetEditor() string {
 	name, err := a.runner.Run("echo", os.Getenv("EDITOR"))
 	if err != nil {
-		return "vim"
+		return "nano"
 	}
 
 	return strings.Trim(name, "\n")
