@@ -2,6 +2,15 @@
 
 > Your AI powered CLI assistant.
 
+<!-- TOC -->
+* [Installation](#installation)
+* [Usage](#usage)
+  * [UI modes](#ui-modes)
+    * [TUI mode](#tui-mode)
+    * [CLI mode](#cli-mode)
+* [Configuration](#configuration)
+<!-- TOC -->
+
 ## Installation
 
 ```shell
