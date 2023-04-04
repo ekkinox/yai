@@ -23,7 +23,7 @@ go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 
 Yo provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
-- CLI: command line interface, made to run a single execution
+- CLI: command line interface, made to perform a single execution
 
 ### TUI mode
 
