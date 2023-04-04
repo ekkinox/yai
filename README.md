@@ -16,12 +16,12 @@ Yo provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
 - CLI: command line interface, made to run a single execution
 
-Launch with TUI run mode:
+Launch with TUI mode:
 ```shell
 yo
 ```
 
-Launch with CLI run mode:
+Launch with CLI mode:
 ```shell
 yo list all my files in my home directory
 ```
