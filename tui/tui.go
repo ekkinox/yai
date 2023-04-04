@@ -237,6 +237,7 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					cmds = append(
 						cmds,
 						promptCmd,
+						tea.Println(fmt.Sprintf("\n%s\n", t.components.renderer.RenderWarning("[cancel]"))),
 						textinput.Blink,
 					)
 				}
