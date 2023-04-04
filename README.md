@@ -2,6 +2,8 @@
 
 > Your AI powered CLI assistant.
 
+![Demo](doc/demo.gif)
+
 ## Table of contents
 
 <!-- TOC -->
