@@ -277,9 +277,9 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		t.state.running = false
 		t.components.prompt, promptCmd = t.components.prompt.Update(msg)
 		t.components.prompt.Focus()
-		output := t.components.renderer.RenderSuccess("[ok]\n")
+		output := t.components.renderer.RenderSuccess("\n[ok]\n")
 		if msg.GetError() != nil {
-			output = t.components.renderer.RenderError(fmt.Sprintf("[error] %s\n", msg.GetError()))
+			output = t.components.renderer.RenderError(fmt.Sprintf("\n[error] %s\n", msg.GetError()))
 		}
 		cmds = append(
 			cmds,
@@ -403,13 +403,11 @@ func (t *Tui) startCommand(input string) tea.Cmd {
 	t.state.running = true
 	t.state.confirming = false
 
-	c := exec.Command("bash", "-c", input)
-	//time.Sleep(time.Millisecond)
+	c := exec.Command("bash", "-c", fmt.Sprintf("%s; echo \"\n\"", input))
 
 	return tea.ExecProcess(c, func(error error) tea.Msg {
 		t.state.running = false
 		t.state.command = ""
-		//time.Sleep(time.Millisecond)
 
 		return runner.RunnerOutput{Error: error}
 	})
