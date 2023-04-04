@@ -2,12 +2,13 @@
 
 > Your AI powered CLI assistant.
 
+## Table of contents
+
 <!-- TOC -->
 * [Installation](#installation)
 * [Usage](#usage)
-  * [UI modes](#ui-modes)
-    * [TUI mode](#tui-mode)
-    * [CLI mode](#cli-mode)
+  * [TUI mode](#tui-mode)
+  * [CLI mode](#cli-mode)
 * [Configuration](#configuration)
 <!-- TOC -->
 
@@ -19,13 +20,12 @@ go get && go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 
 ## Usage
 
-### UI modes
 
 Yo provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
 - CLI: command line interface, made to run a single execution
 
-#### TUI mode
+### TUI mode
 
 ```shell
 yo
@@ -43,7 +43,7 @@ This will open a REPL loop, where you can use the following shortcuts:
 | `ctrl+c` | Exit or interrupt current command / completion |
 
 
-#### CLI mode
+### CLI mode
 
 ```shell
 yo list all my files in my home directory
