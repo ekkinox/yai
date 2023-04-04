@@ -15,7 +15,7 @@
 ## Installation
 
 ```shell
-go get && go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
+go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 ```
 
 ## Usage
