@@ -1,6 +1,6 @@
 # Yo
 
-> Your AI powered CLI assistant.
+> Your AI powered terminal assistant.
 
 ![Demo](doc/demo.gif)
 
