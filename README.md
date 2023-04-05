@@ -70,7 +70,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, and wi
 {
   "openai_key": "sk-xxxxxxxxx", // your OpenAI API key
   "openai_temperature": 0.2,    // chatGPT temperature
-  "user_default_mode": "run",  // prefered run mode: "run" (default) or "chat"
+  "user_default_mode": "run",   // prefered run mode: "run" (default) or "chat"
   "user_context": ""            // to express some preferences in natural language
 }
 ```
