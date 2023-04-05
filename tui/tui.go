@@ -202,7 +202,7 @@ func (t *Tui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// edit settings
 		case tea.KeyCtrlS:
-			if !t.state.running && !t.state.confirming {
+			if !t.state.running && !t.state.confirming && !t.state.configuring {
 				t.state.buffer = ""
 				t.components.prompt, promptCmd = t.components.prompt.Update(msg)
 				cmds = append(
