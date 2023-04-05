@@ -9,10 +9,10 @@
 <!-- TOC -->
 * [Description](#description)
 * [Installation](#installation)
+* [Configuration](#configuration)
 * [Usage](#usage)
   * [TUI mode](#tui-mode)
   * [CLI mode](#cli-mode)
-* [Configuration](#configuration)
 <!-- TOC -->
 
 ## Description
@@ -37,8 +37,22 @@ You can also give any preferences to fine tune your user experience (see [config
 go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 ```
 
-## Usage
+## Configuration
 
+At the first execution, your assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
+
+It will then generate your configuration in the file `~/.config/yo.json`, and will have the following structure:
+
+```JS
+{
+  "openai_key": "sk-xxxxxxxxx", // your OpenAI API key
+  "openai_temperature": 0.2,    // chatGPT temperature
+  "user_default_mode": "run",   // prefered run mode: "run" (default) or "chat"
+  "user_context": ""            // to express some preferences in natural language
+}
+```
+
+## Usage
 
 `Yo` provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
@@ -77,17 +91,3 @@ yo list all my files in my home directory
 
 This will perform a single execution, according to your input.
 
-## Configuration
-
-At the first execution, your assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
-
-It will then generate your configuration in the file `~/.config/yo.json`, and will have the following structure:
-
-```JS
-{
-  "openai_key": "sk-xxxxxxxxx", // your OpenAI API key
-  "openai_temperature": 0.2,    // chatGPT temperature
-  "user_default_mode": "run",   // prefered run mode: "run" (default) or "chat"
-  "user_context": ""            // to express some preferences in natural language
-}
-```
