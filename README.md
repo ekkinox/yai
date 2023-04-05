@@ -19,7 +19,7 @@
 
 `Yo` is an AI powered assistant for your terminal.
 
-It can generate ready to use command lines or discuss to help you, you just need to talk with it using your natural language.
+You can converse in your natural language and it will provide you with either pre-built command lines or engage in discussion to assist you.
 
 To be the most accurate possible, it is already aware of your:
 - operating system
@@ -75,9 +75,9 @@ You also can use the following shortcuts:
 |----------|------------------------------------------------|
 | `↑` `↓`  | Navigate in history                            |
 | `tab`    | Switch between `🚀 run` and `💬 chat` prompts  |
+| `ctrl+s` | Edit settings                                  |
 | `ctrl+r` | Clear terminal and reset discussion history    |
 | `ctrl+l` | Clear terminal but keep discussion history     |
-| `ctrl+s` | Edit settings                                  |
 | `ctrl+c` | Exit or interrupt current command / completion |
 
 
