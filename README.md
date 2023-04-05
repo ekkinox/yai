@@ -17,9 +17,9 @@
 
 ## Description
 
-Yo is a AI powered assistant for your terminal.
+`Yo` is an AI powered assistant for your terminal.
 
-It can generate ready to use command lines or discuss to help you, you just need to talk with it in your natural language.
+It can generate ready to use command lines or discuss to help you, you just need to talk with it using your natural language.
 
 To be the most accurate possible, Yo is already aware of your:
 - operating system
@@ -29,7 +29,7 @@ To be the most accurate possible, Yo is already aware of your:
 - home directory
 - preferred editor
 
-And you can also give any preferences to fine tune your user experience.
+You can also give any preferences to fine tune your user experience (see [configuration](#configuration) section).
 
 ## Installation
 
@@ -40,7 +40,7 @@ go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 ## Usage
 
 
-Yo provides 2 UI modes:
+`Yo` provides 2 UI modes:
 - TUI: terminal user interface, made to offer interactive prompts like a discussion
 - CLI: command line interface, made to perform a single execution
 
