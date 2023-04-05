@@ -21,7 +21,7 @@
 
 It can generate ready to use command lines or discuss to help you, you just need to talk with it using your natural language.
 
-To be the most accurate possible, Yo is already aware of your:
+To be the most accurate possible, it is already aware of your:
 - operating system
 - distribution
 - username
