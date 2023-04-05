@@ -2,6 +2,20 @@
 
 > Your AI powered CLI assistant.
 
+Yo is a AI powered assistant for your terminal.
+
+It can generate ready to use command lines or discuss to help you, you just need to talk with it in your natural language.
+
+To be the most accurate possible, Yo is already aware of your:
+- operating system
+- distribution
+- username
+- shell
+- home directory
+- preferred editor
+
+And you can also give any preferences to fine tune your user experience.
+
 ![Demo](doc/demo.gif)
 
 ## Table of contents
