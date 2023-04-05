@@ -35,10 +35,13 @@ yo
 
 This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), where you can use the following shortcuts:
 
+- `🚀 run` mode: will try to provide a command line for what you ask to do
+- `💬 chat` mode: will chat with you to help you the best way possible
+
 | Keys     | Description                                    |
 |----------|------------------------------------------------|
 | `↑` `↓`  | Navigate in history                            |
-| `tab`    | Switch between `💬 chat` or `🚀 run` prompts   |
+| `tab`    | Switch between `🚀 run` and `💬 chat` prompts  |
 | `ctrl+r` | Clear terminal and reset discussion history    |
 | `ctrl+l` | Clear terminal but keep discussion history     |
 | `ctrl+s` | Edit settings                                  |

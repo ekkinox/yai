@@ -61,7 +61,7 @@ func NewTui() *Tui {
 			150,
 		},
 		components: TuiComponents{
-			prompt: components.NewPrompt(engine.ChatEngineMode),
+			prompt: components.NewPrompt(engine.RunEngineMode),
 			renderer: components.NewRenderer(
 				glamour.WithAutoStyle(),
 				glamour.WithWordWrap(150),
@@ -356,7 +356,7 @@ func (t *Tui) finishConfiguration(key string) tea.Cmd {
 		t.config = config
 		t.engine = engine.NewEngine(config)
 		t.state.buffer = ""
-		t.components.prompt = components.NewPrompt(engine.ChatEngineMode)
+		t.components.prompt = components.NewPrompt(engine.RunEngineMode)
 
 		return tea.Sequence(
 			tea.Println(fmt.Sprintf("\n\nConfig generated in %s.\n\n", t.config.GetContext().GetConfigFile())),

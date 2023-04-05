@@ -89,7 +89,7 @@ func WriteConfig(key string) (*Config, error) {
 
 	viper.Set(openai_key, key)
 	viper.SetDefault(openai_temperature, 0.2)
-	viper.SetDefault(user_default_mode, "chat")
+	viper.SetDefault(user_default_mode, "run")
 	viper.SetDefault(user_context, "")
 
 	err := viper.SafeWriteConfigAs(context.GetConfigFile())
