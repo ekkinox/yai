@@ -33,10 +33,12 @@ Yo provides 2 UI modes:
 yo
 ```
 
-This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), where you can use the following shortcuts:
+This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), with 2 types of prompts
 
-- `🚀 run` mode: will try to provide a command line for what you ask to do
-- `💬 chat` mode: will chat with you to help you the best way possible
+- `🚀 run`: will try to provide a command line for what you ask to do
+- `💬 chat`: will chat with you to help you the best way possible
+
+You also can use the following shortcuts:
 
 | Keys     | Description                                    |
 |----------|------------------------------------------------|
