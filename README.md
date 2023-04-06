@@ -1,4 +1,4 @@
-# Yo (work in progress)
+# Yo *(work in progress)*
 
 > Your AI powered terminal assistant.
 
