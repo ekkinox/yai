@@ -10,12 +10,14 @@ import (
 const error_color = "#cc3333"
 const warning_color = "#ffcc00"
 const success_color = "#46b946"
+const help_color = "#777777"
 
 type Renderer struct {
 	contentRenderer *glamour.TermRenderer
 	successRenderer lipgloss.Style
 	warningRenderer lipgloss.Style
 	errorRenderer   lipgloss.Style
+	helpRenderer    lipgloss.Style
 }
 
 func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
@@ -28,12 +30,14 @@ func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
 	successRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(success_color))
 	warningRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(warning_color))
 	errorRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(error_color))
+	helpRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(help_color)).Italic(true)
 
 	return &Renderer{
 		contentRenderer: contentRenderer,
 		successRenderer: successRenderer,
 		warningRenderer: warningRenderer,
 		errorRenderer:   errorRenderer,
+		helpRenderer:    helpRenderer,
 	}
 }
 
@@ -53,4 +57,8 @@ func (r *Renderer) RenderWarning(in string) string {
 
 func (r *Renderer) RenderError(in string) string {
 	return r.errorRenderer.Render(in)
+}
+
+func (r *Renderer) RenderHelp(in string) string {
+	return r.helpRenderer.Render(in)
 }

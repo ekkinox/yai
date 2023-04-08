@@ -158,13 +158,23 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				u.components.prompt.Input.SetValue("")
 				u.components.prompt.Input.Blur()
 				u.components.prompt.Input, promptCmd = u.components.prompt.Input.Update(msg)
-				cmds = append(
-					cmds,
-					promptCmd,
-					tea.Println(inputStr),
-					u.runEngine(input),
-					u.awaitEngine(),
-				)
+				if u.engine.GetMode() == ai.ChatEngineMode {
+					cmds = append(
+						cmds,
+						promptCmd,
+						tea.Println(inputStr),
+						u.startEngineStream(input),
+						u.awaitEngineStream(),
+					)
+				} else {
+					cmds = append(
+						cmds,
+						promptCmd,
+						tea.Println(inputStr),
+						u.startEngine(input),
+					)
+				}
+
 			}
 
 		// clear
@@ -245,8 +255,27 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 			}
 		}
-	// engine feedback
-	case ai.EngineOutput:
+	// engine exec feedback
+	case ai.EngineExecOutput:
+		var output string
+		u.components.prompt.Input, promptCmd = u.components.prompt.Input.Update(msg)
+		if msg.IsExecutable() {
+			u.state.confirming = true
+			u.state.command = msg.GetCommand()
+			output = u.components.renderer.RenderContent(fmt.Sprintf("`%s`", u.state.command))
+			output += fmt.Sprintf("  %s\n\n  confirm execution? [y/N]", u.components.renderer.RenderHelp(msg.GetExplanation()))
+			u.components.prompt.Input.Blur()
+		} else {
+			output = u.components.renderer.RenderContent(msg.GetExplanation())
+			u.components.prompt.Input.Focus()
+		}
+		return u, tea.Sequence(
+			tea.Println(output),
+			promptCmd,
+			textinput.Blink,
+		)
+	// engine chat feedback
+	case ai.EngineChatOutput:
 		if msg.IsLast() {
 			var output string
 			if msg.IsExecutable() {
@@ -260,12 +289,11 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				u.components.prompt.Input.Focus()
 			}
 			return u, tea.Sequence(
-				promptCmd,
 				tea.Println(output),
 				textinput.Blink,
 			)
 		} else {
-			return u, u.awaitEngine()
+			return u, u.awaitEngineStream()
 		}
 	// runner feedback
 	case run.RunOutput:
@@ -383,11 +411,35 @@ func (u *Ui) finishConfiguration(key string) tea.Cmd {
 	}
 }
 
-func (u *Ui) runEngine(input string) tea.Cmd {
+func (u *Ui) startEngine(input string) tea.Cmd {
 	return func() tea.Msg {
 		if u.state.running {
 			log.Printf("engine already running")
 			return errors.New("engine already running")
+		}
+
+		u.state.running = true
+		u.state.confirming = false
+		u.state.buffer = ""
+		u.state.command = ""
+
+		output, err := u.engine.ChatCompletion(input)
+		u.state.running = false
+		log.Printf("engine exec output: %+v", output)
+		if err != nil {
+			log.Printf("ChatCompletion error: %v", err)
+			return err
+		}
+
+		return *output
+	}
+}
+
+func (u *Ui) startEngineStream(input string) tea.Cmd {
+	return func() tea.Msg {
+		if u.state.running {
+			log.Printf("engine already streaming")
+			return errors.New("engine already streaming")
 		}
 
 		u.state.running = true
@@ -405,9 +457,9 @@ func (u *Ui) runEngine(input string) tea.Cmd {
 	}
 }
 
-func (u *Ui) awaitEngine() tea.Cmd {
+func (u *Ui) awaitEngineStream() tea.Cmd {
 	return func() tea.Msg {
-		var output ai.EngineOutput
+		var output ai.EngineChatOutput
 
 		output = <-u.engine.GetChannel()
 		u.state.buffer += output.GetContent()

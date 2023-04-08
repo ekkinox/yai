@@ -23,6 +23,6 @@ func PrepareInteractiveCommand(input string) *exec.Cmd {
 	return exec.Command(
 		"bash",
 		"-c",
-		fmt.Sprintf("%s; echo \"\n\";", strings.TrimRight(input, ";")),
+		fmt.Sprintf("echo \"\n=> output:\n\";%s; echo \"\n\";", strings.TrimRight(input, ";")),
 	)
 }

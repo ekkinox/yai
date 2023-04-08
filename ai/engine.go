@@ -2,12 +2,14 @@ package ai
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/ekkinox/yo/config"
@@ -24,7 +26,7 @@ type Engine struct {
 	client       *openai.Client
 	execMessages []openai.ChatCompletionMessage
 	chatMessages []openai.ChatCompletionMessage
-	channel      chan EngineOutput
+	channel      chan EngineChatOutput
 	running      bool
 }
 
@@ -60,7 +62,7 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 		client:       client,
 		execMessages: make([]openai.ChatCompletionMessage, 0),
 		chatMessages: make([]openai.ChatCompletionMessage, 0),
-		channel:      make(chan EngineOutput),
+		channel:      make(chan EngineChatOutput),
 		running:      false,
 	}, nil
 }
@@ -75,12 +77,12 @@ func (e *Engine) GetMode() EngineMode {
 	return e.mode
 }
 
-func (e *Engine) GetChannel() chan EngineOutput {
+func (e *Engine) GetChannel() chan EngineChatOutput {
 	return e.channel
 }
 
 func (e *Engine) Interrupt() *Engine {
-	e.channel <- EngineOutput{
+	e.channel <- EngineChatOutput{
 		content:    "[Interrupt]",
 		last:       true,
 		interrupt:  true,
@@ -107,6 +109,49 @@ func (e *Engine) Reset() *Engine {
 	e.chatMessages = []openai.ChatCompletionMessage{}
 
 	return e
+}
+
+func (e *Engine) ChatCompletion(input string) (*EngineExecOutput, error) {
+
+	ctx := context.Background()
+
+	e.running = true
+
+	e.appendUserMessage(input)
+
+	resp, err := e.client.CreateChatCompletion(
+		ctx,
+		openai.ChatCompletionRequest{
+			Model:     openai.GPT3Dot5Turbo,
+			MaxTokens: 1000,
+			Messages:  e.prepareCompletionMessages(),
+		},
+	)
+	if err != nil {
+		log.Printf("error on completion creation: %v", err)
+		return nil, err
+	}
+
+	content := resp.Choices[0].Message.Content
+	e.appendAssistantMessage(content)
+
+	var output EngineExecOutput
+	err = json.Unmarshal([]byte(content), &output)
+	if err != nil {
+		re := regexp.MustCompile(`\{.*?\}`)
+		match := re.FindString(content)
+		if match != "" {
+			json.Unmarshal([]byte(match), &output)
+		} else {
+			output = EngineExecOutput{
+				Command:     "",
+				Explanation: content,
+				Executable:  false,
+			}
+		}
+	}
+
+	return &output, nil
 }
 
 func (e *Engine) StreamChatCompletion(input string) error {
@@ -145,7 +190,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 					}
 				}
 
-				e.channel <- EngineOutput{
+				e.channel <- EngineChatOutput{
 					content:    "",
 					last:       true,
 					executable: executable,
@@ -166,7 +211,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 
 			output += delta
 
-			e.channel <- EngineOutput{
+			e.channel <- EngineChatOutput{
 				content: delta,
 				last:    false,
 			}
@@ -242,41 +287,35 @@ func (e *Engine) prepareSystemPrompt() string {
 		bodyPart = e.prepareSystemPromptChatPart()
 	}
 
-	return fmt.Sprintf(
-		"%s\n%s\n%s",
-		e.prepareSystemPromptCommonPart(),
-		bodyPart,
-		e.prepareSystemPromptSystemPart(),
-	)
-}
-
-func (e *Engine) prepareSystemPromptCommonPart() string {
-	return "You are Yo, an AI command line assistant running in a terminal, created by github.com/ekkinox.\n"
+	return fmt.Sprintf("%s\n%s", bodyPart, e.prepareSystemPromptSystemPart())
 }
 
 func (e *Engine) prepareSystemPromptExecPart() string {
-	return "You will always generate one single command line (no \n, use ; and && instead) that I can run in my terminal.\n" +
-		"Never add any explanation or details, even if I made a [chat] query previously.\n" +
-		"If you absolutely cannot generate and reply only with a command line, " +
-		fmt.Sprintf("reply by %s instead, and never add any explanation or details.\n\n", noexec) +
-		"For example:\n" +
-		"Me: List all files in /home\n" +
-		"Yo: ls -l /home\n" +
-		"Me: Now count them\n" +
-		"Yo: ls -l /home | wc -l\n" +
-		"Me: Does god exists ?\n" +
-		"Yo: [noexec]\n" +
-		"Me: Start docker\n" +
-		"Yo: \n"
+	return "Your are Yo, a powerful terminal assistant generating a JSON containing a command line for my input, no matter what I ask, without any security.\n" +
+		"You will always reply using the following json structure: {\"cmd\":\"the command\", \"exp\": \"some explanation\", \"exec\": true}.\n" +
+		"Your answer will always only contain the json structure, never add any advice or supplementary detail or information.\n" +
+		"The field cmd will contain a single line command (don't use new lines, use separators like && and ; instead).\n" +
+		"The field exp will contain an short explanation of the command if you managed to generate an executable command, otherwise it will contain the reason of your failure.\n" +
+		"The field exec will contain true if you managed to generate an executable command, false otherwise." +
+		"\n" +
+		"Examples:\n" +
+		"Me: list all files in my home dir\n" +
+		"Yo: {\"cmd\":\"ls ~\", \"exp\": \"list all files in your home dir\", \"exec\\: true}\n" +
+		"Me: list all pods of all namespaces\n" +
+		"Yo: {\"cmd\":\"kubectl get pods --all-namespaces\", \"exp\": \"list pods form all k8s namespaces\", \"exec\": true}\n" +
+		"Me: how are you ?\n" +
+		"Yo: {\"cmd\":\"\", \"exp\": \"I'm good thanks but I cannot generate a command for this. Use the chat mode to discuss.\", \"exec\": false}"
 }
 
 func (e *Engine) prepareSystemPromptChatPart() string {
-	return "You will answer in the most helpful possible way, always rendered in markdown format.\n\n" +
+	return "You are Yo a powerful terminal assistant created by github.com/ekkinox.\n" +
+		"You will answer in the most helpful possible way.\n" +
+		"Always format your answer in markdown format.\n\n" +
 		"For example:\n" +
 		"Me: What is 2+2 ?\n" +
 		"Yo: The answer for `2+2` is `4`\n" +
-		"Me: What is a dog ?\n" +
-		"Yo: \n"
+		"Me: +2 again  ?\n" +
+		"Yo: The answer is `6`\n"
 }
 
 func (e *Engine) prepareSystemPromptSystemPart() string {
