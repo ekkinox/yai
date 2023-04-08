@@ -1,4 +1,4 @@
-package context
+package system
 
 type OperatingSystem int
 

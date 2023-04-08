@@ -2,97 +2,66 @@ package config
 
 import (
 	"fmt"
-	"github.com/ekkinox/yo/context"
+	"github.com/ekkinox/yo/system"
 	"github.com/spf13/viper"
 	"log"
 	"strings"
 )
 
-const openai_key = "OPENAI_KEY"
-const openai_temperature = "OPENAI_TEMPERATURE"
-const user_default_mode = "USER_DEFAULT_MODE"
-const user_context = "USER_CONTEXT"
-
-type ConfigOutput struct{}
-
-type ConfigOpenAI struct {
-	key         string
-	temperature float64
-}
-
-func (co ConfigOpenAI) GetKey() string {
-	return co.key
-}
-
-func (co ConfigOpenAI) GetTemperature() float64 {
-	return co.temperature
-}
-
-type ConfigUserPreferences struct {
-	defaultMode string
-	context     string
-}
-
-func (cu ConfigUserPreferences) GetDefaultMode() string {
-	return cu.defaultMode
-}
-
-func (cu ConfigUserPreferences) GetContext() string {
-	return cu.context
-}
-
 type Config struct {
-	openAI          ConfigOpenAI
-	userPreferences ConfigUserPreferences
-	context         *context.Context
+	ai     AiConfig
+	user   UserConfig
+	system *system.Analysis
 }
 
-func (c *Config) GetOpenAI() ConfigOpenAI {
-	return c.openAI
+func (c *Config) GetAiConfig() AiConfig {
+	return c.ai
 }
 
-func (c *Config) GetUserPreferences() ConfigUserPreferences {
-	return c.userPreferences
+func (c *Config) GetUserConfig() UserConfig {
+	return c.user
 }
 
-func (c *Config) GetContext() *context.Context {
-	return c.context
+func (c *Config) GetSystemConfig() *system.Analysis {
+	return c.system
 }
 
 func NewConfig() (*Config, error) {
 
-	context := context.NewContextAnalyzer().Analyse()
+	system := system.Analyse()
 
-	viper.SetConfigName(strings.ToLower(context.GetAppName()))
-	viper.AddConfigPath(fmt.Sprintf("%s/.config/", context.GetHomeDirectory()))
+	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
+	viper.AddConfigPath(fmt.Sprintf("%s/.config/", system.GetHomeDirectory()))
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
 
 	return &Config{
-		openAI: ConfigOpenAI{
+		ai: AiConfig{
 			key:         viper.GetString(openai_key),
 			temperature: viper.GetFloat64(openai_temperature),
+			proxy:       viper.GetString(openai_proxy),
 		},
-		userPreferences: ConfigUserPreferences{
+		user: UserConfig{
 			defaultMode: viper.GetString(user_default_mode),
-			context:     viper.GetString(user_context),
+			preferences: viper.GetString(user_preferences),
 		},
-		context: context,
+		system: system,
 	}, nil
 }
 
 func WriteConfig(key string) (*Config, error) {
 
-	context := context.NewContextAnalyzer().Analyse()
+	system := system.Analyse()
 
 	viper.Set(openai_key, key)
 	viper.SetDefault(openai_temperature, 0.2)
-	viper.SetDefault(user_default_mode, "run")
-	viper.SetDefault(user_context, "")
+	viper.SetDefault(openai_proxy, "")
+	viper.SetDefault(user_default_mode, "exec")
+	viper.SetDefault(user_preferences, "")
 
-	err := viper.SafeWriteConfigAs(context.GetConfigFile())
+	err := viper.SafeWriteConfigAs(system.GetConfigFile())
 	if err != nil {
 		log.Printf("error: %v", err)
 		return nil, err

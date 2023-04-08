@@ -1,10 +1,15 @@
-package components
+package renderer
 
 import (
+	"log"
+
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
-	"log"
 )
+
+const error_color = "#cc3333"
+const warning_color = "#ffcc00"
+const success_color = "#46b946"
 
 type Renderer struct {
 	contentRenderer *glamour.TermRenderer
@@ -20,9 +25,9 @@ func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
 		log.Printf("error: %v", err)
 	}
 
-	successRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color("#46b946"))
-	warningRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color("#ffcc00"))
-	errorRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color("#cc3333"))
+	successRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(success_color))
+	warningRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(warning_color))
+	errorRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(error_color))
 
 	return &Renderer{
 		contentRenderer: contentRenderer,
@@ -33,8 +38,6 @@ func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
 }
 
 func (r *Renderer) RenderContent(in string) string {
-
-	// allow silent failures for text streams rendering
 	out, _ := r.contentRenderer.Render(in)
 
 	return out

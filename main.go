@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 
+	"github.com/ekkinox/yo/ui"
+
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/ekkinox/yo/tui"
 )
 
 func main() {
@@ -17,7 +18,7 @@ func main() {
 	}
 	defer f.Close()
 
-	app := tea.NewProgram(tui.NewTui())
+	app := tea.NewProgram(ui.NewUi())
 
 	if _, err := app.Run(); err != nil {
 		log.Fatal(err)
