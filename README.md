@@ -19,7 +19,7 @@
 
 `Yo` is an AI powered assistant for your terminal.
 
-You can converse in your natural language and it will provide you with either pre-built command lines or engage in discussion to assist you.
+You can converse in your natural language, and it will provide you with either pre-built command lines or engage in discussion to assist you.
 
 To be the most accurate possible, it is already aware of your:
 - operating system
