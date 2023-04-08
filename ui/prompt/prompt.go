@@ -7,13 +7,13 @@ import (
 )
 
 const exec_color = "#edc95e"
-const exec_icon = "🚀 "
+const exec_icon = "🚀 > "
 const exec_placeholder = "Ask me something..."
 const config_color = "#ffffff"
-const config_icon = "🔒 "
+const config_icon = "🔒 > "
 const config_placeholder = "Enter your OpenAI key..."
 const chat_color = "#66b3ff"
-const chat_icon = "💬 "
+const chat_icon = "💬 > "
 const chat_placeholder = "Ask me something..."
 
 type Prompt struct {
@@ -74,13 +74,16 @@ func getPromptStyle(mode PromptMode) lipgloss.Style {
 }
 
 func getPromptIcon(mode PromptMode) string {
+
+	style := getPromptStyle(mode)
+
 	switch mode {
 	case ExecPromptMode:
-		return exec_icon
+		return style.Render(exec_icon)
 	case ConfigPromptMode:
-		return config_icon
+		return style.Render(config_icon)
 	default:
-		return chat_icon
+		return style.Render(chat_icon)
 	}
 }
 

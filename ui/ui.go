@@ -327,7 +327,9 @@ func (u *Ui) startUi(config *config.Config) tea.Cmd {
 			log.Printf("error: %v", err)
 		}
 		u.engine = engine
-		u.components.prompt = prompt.NewPrompt(prompt.FromString(config.GetUserConfig().GetDefaultMode()))
+		u.state.buffer = ""
+		u.state.command = ""
+		u.components.prompt = prompt.NewPrompt(prompt.ExecPromptMode)
 
 		return tea.Sequence(
 			tea.ClearScreen,
@@ -364,7 +366,20 @@ func (u *Ui) finishConfiguration(key string) tea.Cmd {
 			return err
 		}
 
-		return u.startUi(config)
+		u.config = config
+		engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+		if err != nil {
+			log.Printf("error: %v", err)
+		}
+		u.engine = engine
+		u.state.buffer = ""
+		u.state.command = ""
+		u.components.prompt = prompt.NewPrompt(prompt.ExecPromptMode)
+
+		return tea.Sequence(
+			tea.ClearScreen,
+			textinput.Blink,
+		)
 	}
 }
 
