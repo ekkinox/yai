@@ -11,7 +11,7 @@
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Usage](#usage)
-  * [TUI mode](#tui-mode)
+  * [REPL mode](#repl-mode)
   * [CLI mode](#cli-mode)
 <!-- TOC -->
 
@@ -45,20 +45,21 @@ It will then generate your configuration in the file `~/.config/yo.json`, and wi
 
 ```JS
 {
-  "openai_key": "sk-xxxxxxxxx", // your OpenAI API key
-  "openai_temperature": 0.2,    // chatGPT temperature
-  "user_default_mode": "run",   // prefered run mode: "run" (default) or "chat"
-  "user_context": ""            // to express some preferences in natural language
+  "openai_key": "sk-xxxxxxxxx",  // your OpenAI API key
+  "openai_proxy": "",            // proxy to connect to OpenAI API if needed
+  "openai_temperature": 0.2,     // chatGPT temperature
+  "user_default_mode": "exec",   // prefered run mode: "exec" (default) or "chat"
+  "user_preferences": ""         // to express preferences in natural language
 }
 ```
 
 ## Usage
 
-`Yo` provides 2 UI modes:
-- TUI: terminal user interface, made to offer interactive prompts like a discussion
+`Yo` provides 2 modes:
+- REPL: terminal user interface, made to offer interactive prompts in a loop
 - CLI: command line interface, made to perform a single execution
 
-### TUI mode
+### REPL mode
 
 ```shell
 yo
@@ -66,24 +67,22 @@ yo
 
 This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), with 2 types of prompts
 
-- `🚀 run`: will try to provide a command line for what you ask to do
-- `💬 chat`: will chat with you to help you the best way possible
+- `🚀 exec`: will try to provide a command line for what you're asking
+- `💬 chat`: will engage discussion to help you the best way possible
 
 You also can use the following shortcuts:
 
 | Keys     | Description                                    |
 |----------|------------------------------------------------|
 | `↑` `↓`  | Navigate in history                            |
-| `tab`    | Switch between `🚀 run` and `💬 chat` prompts  |
+| `tab`    | Switch between `🚀 exec` and `💬 chat` prompts |
 | `ctrl+s` | Edit settings                                  |
 | `ctrl+r` | Clear terminal and reset discussion history    |
 | `ctrl+l` | Clear terminal but keep discussion history     |
 | `ctrl+c` | Exit or interrupt current command / completion |
 
 
-### CLI mode
-
-**TODO**: work in progress
+### CLI mode (*Coming soon*)
 
 ```shell
 yo list all my files in my home directory
