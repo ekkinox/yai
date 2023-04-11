@@ -1,4 +1,4 @@
-package prompt
+package ui
 
 type PromptMode int
 
@@ -27,5 +27,20 @@ func FromString(s string) PromptMode {
 		return ConfigPromptMode
 	default:
 		return ChatPromptMode
+	}
+}
+
+type RunMode int
+
+const (
+	CliMode RunMode = iota
+	ReplMode
+)
+
+func (m RunMode) String() string {
+	if m == CliMode {
+		return "cli"
+	} else {
+		return "repl"
 	}
 }

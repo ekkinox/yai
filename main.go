@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"log"
-	"os"
+	"math/rand"
+	"strings"
+	"time"
 
 	"github.com/ekkinox/yo/ui"
 
@@ -11,16 +13,29 @@ import (
 )
 
 func main() {
-	f, err := tea.LogToFile("debug.log", "debug")
-	if err != nil {
-		fmt.Println("fatal:", err)
-		os.Exit(1)
+
+	rand.Seed(time.Now().UnixNano())
+
+	var exec, chat bool
+	flag.BoolVar(&exec, "exec", false, "Exec mode")
+	flag.BoolVar(&chat, "chat", false, "Chat mode")
+	flag.Parse()
+
+	args := flag.Args()
+
+	mode := ui.ReplMode
+	if len(args) > 0 {
+		mode = ui.CliMode
 	}
-	defer f.Close()
 
-	app := tea.NewProgram(ui.NewUi())
+	var program *tea.Program
+	if mode == ui.ReplMode {
+		program = tea.NewProgram(ui.NewRepl())
+	} else {
+		program = tea.NewProgram(ui.NewCli(strings.Join(args, " ")))
+	}
 
-	if _, err := app.Run(); err != nil {
+	if _, err := program.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

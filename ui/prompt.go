@@ -1,24 +1,22 @@
-package prompt
+package ui
 
 import (
 	"fmt"
 	"github.com/charmbracelet/bubbles/textinput"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-const exec_color = "#edc95e"
 const exec_icon = "🚀 > "
-const exec_placeholder = "Ask me something..."
-const config_color = "#ffffff"
+const exec_placeholder = "Execute something..."
 const config_icon = "🔒 > "
 const config_placeholder = "Enter your OpenAI key..."
-const chat_color = "#66b3ff"
 const chat_icon = "💬 > "
 const chat_placeholder = "Ask me something..."
 
 type Prompt struct {
 	mode  PromptMode
-	Input textinput.Model
+	input textinput.Model
 }
 
 func NewPrompt(mode PromptMode) *Prompt {
@@ -36,30 +34,62 @@ func NewPrompt(mode PromptMode) *Prompt {
 
 	return &Prompt{
 		mode:  mode,
-		Input: input,
+		input: input,
 	}
-
 }
 
 func (p *Prompt) GetMode() PromptMode {
 	return p.mode
 }
 
-func (p *Prompt) ChangeMode(mode PromptMode) *Prompt {
+func (p *Prompt) SetMode(mode PromptMode) *Prompt {
 
 	p.mode = mode
 
-	p.Input.TextStyle = getPromptStyle(mode)
-	p.Input.Prompt = getPromptIcon(mode)
-	p.Input.Placeholder = getPromptPlaceholder(mode)
+	p.input.TextStyle = getPromptStyle(mode)
+	p.input.Prompt = getPromptIcon(mode)
+	p.input.Placeholder = getPromptPlaceholder(mode)
 
 	return p
 }
 
-func (p *Prompt) String() string {
+func (p *Prompt) SetValue(value string) *Prompt {
+	p.input.SetValue(value)
+
+	return p
+}
+
+func (p *Prompt) GetValue() string {
+	return p.input.Value()
+}
+
+func (p *Prompt) Blur() *Prompt {
+	p.input.Blur()
+
+	return p
+}
+
+func (p *Prompt) Focus() *Prompt {
+	p.input.Focus()
+
+	return p
+}
+
+func (p *Prompt) Update(msg tea.Msg) (*Prompt, tea.Cmd) {
+	var updateCmd tea.Cmd
+	p.input, updateCmd = p.input.Update(msg)
+
+	return p, updateCmd
+}
+
+func (p *Prompt) View() string {
+	return p.input.View()
+}
+
+func (p *Prompt) AsString() string {
 	style := getPromptStyle(p.mode)
 
-	return fmt.Sprintf("%s%s\n", style.Render(getPromptIcon(p.mode)), style.Render(p.Input.Value()))
+	return fmt.Sprintf("%s%s", style.Render(getPromptIcon(p.mode)), style.Render(p.input.Value()))
 }
 
 func getPromptStyle(mode PromptMode) lipgloss.Style {

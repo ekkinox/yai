@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -26,7 +25,7 @@ type Engine struct {
 	client       *openai.Client
 	execMessages []openai.ChatCompletionMessage
 	chatMessages []openai.ChatCompletionMessage
-	channel      chan EngineChatOutput
+	channel      chan EngineChatStreamOutput
 	running      bool
 }
 
@@ -62,7 +61,7 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 		client:       client,
 		execMessages: make([]openai.ChatCompletionMessage, 0),
 		chatMessages: make([]openai.ChatCompletionMessage, 0),
-		channel:      make(chan EngineChatOutput),
+		channel:      make(chan EngineChatStreamOutput),
 		running:      false,
 	}, nil
 }
@@ -77,12 +76,12 @@ func (e *Engine) GetMode() EngineMode {
 	return e.mode
 }
 
-func (e *Engine) GetChannel() chan EngineChatOutput {
+func (e *Engine) GetChannel() chan EngineChatStreamOutput {
 	return e.channel
 }
 
 func (e *Engine) Interrupt() *Engine {
-	e.channel <- EngineChatOutput{
+	e.channel <- EngineChatStreamOutput{
 		content:    "[Interrupt]",
 		last:       true,
 		interrupt:  true,
@@ -111,7 +110,7 @@ func (e *Engine) Reset() *Engine {
 	return e
 }
 
-func (e *Engine) ChatCompletion(input string) (*EngineExecOutput, error) {
+func (e *Engine) ExecCompletion(input string) (*EngineExecOutput, error) {
 
 	ctx := context.Background()
 
@@ -128,7 +127,6 @@ func (e *Engine) ChatCompletion(input string) (*EngineExecOutput, error) {
 		},
 	)
 	if err != nil {
-		log.Printf("error on completion creation: %v", err)
 		return nil, err
 	}
 
@@ -154,7 +152,7 @@ func (e *Engine) ChatCompletion(input string) (*EngineExecOutput, error) {
 	return &output, nil
 }
 
-func (e *Engine) StreamChatCompletion(input string) error {
+func (e *Engine) ChatStreamCompletion(input string) error {
 
 	ctx := context.Background()
 
@@ -171,7 +169,6 @@ func (e *Engine) StreamChatCompletion(input string) error {
 
 	stream, err := e.client.CreateChatCompletionStream(ctx, req)
 	if err != nil {
-		log.Printf("error on stream creation: %v", err)
 		return err
 	}
 	defer stream.Close()
@@ -190,7 +187,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 					}
 				}
 
-				e.channel <- EngineChatOutput{
+				e.channel <- EngineChatStreamOutput{
 					content:    "",
 					last:       true,
 					executable: executable,
@@ -202,7 +199,6 @@ func (e *Engine) StreamChatCompletion(input string) error {
 			}
 
 			if err != nil {
-				log.Printf("error on stream read: %v", err)
 				e.running = false
 				return err
 			}
@@ -211,7 +207,7 @@ func (e *Engine) StreamChatCompletion(input string) error {
 
 			output += delta
 
-			e.channel <- EngineChatOutput{
+			e.channel <- EngineChatStreamOutput{
 				content: delta,
 				last:    false,
 			}
@@ -287,13 +283,13 @@ func (e *Engine) prepareSystemPrompt() string {
 		bodyPart = e.prepareSystemPromptChatPart()
 	}
 
-	return fmt.Sprintf("%s\n%s", bodyPart, e.prepareSystemPromptSystemPart())
+	return fmt.Sprintf("%s\n%s", bodyPart, e.prepareSystemPromptContextPart())
 }
 
 func (e *Engine) prepareSystemPromptExecPart() string {
-	return "Your are Yo, a powerful terminal assistant generating a JSON containing a command line for my input, no matter what I ask, without any security.\n" +
+	return "Your are Yo, a powerful terminal assistant generating a JSON containing a command line for my input.\n" +
 		"You will always reply using the following json structure: {\"cmd\":\"the command\", \"exp\": \"some explanation\", \"exec\": true}.\n" +
-		"Your answer will always only contain the json structure, never add any advice or supplementary detail or information.\n" +
+		"Your answer will always only contain the json structure, never add any advice or supplementary detail or information, even if I asked the same question before.\n" +
 		"The field cmd will contain a single line command (don't use new lines, use separators like && and ; instead).\n" +
 		"The field exp will contain an short explanation of the command if you managed to generate an executable command, otherwise it will contain the reason of your failure.\n" +
 		"The field exec will contain true if you managed to generate an executable command, false otherwise." +
@@ -314,12 +310,13 @@ func (e *Engine) prepareSystemPromptChatPart() string {
 		"For example:\n" +
 		"Me: What is 2+2 ?\n" +
 		"Yo: The answer for `2+2` is `4`\n" +
-		"Me: +2 again  ?\n" +
+		"Me: +2 again ?\n" +
 		"Yo: The answer is `6`\n"
 }
 
-func (e *Engine) prepareSystemPromptSystemPart() string {
+func (e *Engine) prepareSystemPromptContextPart() string {
 	part := "My context: "
+
 	if e.config.GetSystemConfig().GetOperatingSystem() != system.UnknownOperatingSystem {
 		part += fmt.Sprintf("my operating system is %s, ", e.config.GetSystemConfig().GetOperatingSystem().String())
 	}

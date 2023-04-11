@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/ekkinox/yo/system"
 	"github.com/spf13/viper"
-	"log"
 	"strings"
 )
 
@@ -63,7 +62,6 @@ func WriteConfig(key string) (*Config, error) {
 
 	err := viper.SafeWriteConfigAs(system.GetConfigFile())
 	if err != nil {
-		log.Printf("error: %v", err)
 		return nil, err
 	}
 

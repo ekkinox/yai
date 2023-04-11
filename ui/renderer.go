@@ -1,16 +1,17 @@
-package renderer
+package ui
 
 import (
-	"log"
-
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 )
 
+const exec_color = "#edc95e"
+const config_color = "#ffffff"
+const chat_color = "#66b3ff"
+const help_color = "#777777"
 const error_color = "#cc3333"
 const warning_color = "#ffcc00"
 const success_color = "#46b946"
-const help_color = "#777777"
 
 type Renderer struct {
 	contentRenderer *glamour.TermRenderer
@@ -24,7 +25,7 @@ func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
 
 	contentRenderer, err := glamour.NewTermRenderer(options...)
 	if err != nil {
-		log.Printf("error: %v", err)
+		return nil
 	}
 
 	successRenderer := lipgloss.NewStyle().Foreground(lipgloss.Color(success_color))

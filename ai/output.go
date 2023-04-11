@@ -18,25 +18,25 @@ func (eo EngineExecOutput) IsExecutable() bool {
 	return eo.Executable
 }
 
-type EngineChatOutput struct {
+type EngineChatStreamOutput struct {
 	content    string
 	last       bool
 	interrupt  bool
 	executable bool
 }
 
-func (co EngineChatOutput) GetContent() string {
+func (co EngineChatStreamOutput) GetContent() string {
 	return co.content
 }
 
-func (co EngineChatOutput) IsLast() bool {
+func (co EngineChatStreamOutput) IsLast() bool {
 	return co.last
 }
 
-func (co EngineChatOutput) IsInterrupt() bool {
+func (co EngineChatStreamOutput) IsInterrupt() bool {
 	return co.interrupt
 }
 
-func (co EngineChatOutput) IsExecutable() bool {
+func (co EngineChatStreamOutput) IsExecutable() bool {
 	return co.executable
 }

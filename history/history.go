@@ -19,10 +19,6 @@ func (h *History) Reset() *History {
 	return h
 }
 
-func (h *History) All() map[int]string {
-	return h.inputs
-}
-
 func (h *History) Add(input string) *History {
 	h.cursor = len(h.inputs)
 	h.inputs[h.cursor] = input
@@ -30,7 +26,15 @@ func (h *History) Add(input string) *History {
 	return h
 }
 
-func (h *History) Previous() *string {
+func (h *History) GetAll() map[int]string {
+	return h.inputs
+}
+
+func (h *History) GetCursor() int {
+	return h.cursor
+}
+
+func (h *History) GetPrevious() *string {
 	if input, ok := h.inputs[h.cursor]; ok {
 		h.cursor--
 		return &input
@@ -39,7 +43,7 @@ func (h *History) Previous() *string {
 	return nil
 }
 
-func (h *History) Next() *string {
+func (h *History) GetNext() *string {
 	if input, ok := h.inputs[h.cursor+1]; ok {
 		h.cursor++
 		return &input
