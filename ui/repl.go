@@ -16,52 +16,56 @@ import (
 	"github.com/spf13/viper"
 )
 
-type ReplState struct {
+type UiState struct {
 	configuring bool
 	querying    bool
 	confirming  bool
 	executing   bool
+	args        string
 	buffer      string
 	command     string
 	error       error
 }
 
-type ReplDimensions struct {
+type UiDimensions struct {
 	width  int
 	height int
 }
 
-type ReplComponents struct {
+type UiComponents struct {
 	prompt   *Prompt
 	renderer *Renderer
 	spinner  *Spinner
 }
 
-type Repl struct {
-	state      ReplState
-	dimensions ReplDimensions
-	components ReplComponents
+type Ui struct {
+	mode       RunMode
+	state      UiState
+	dimensions UiDimensions
+	components UiComponents
 	config     *config.Config
 	engine     *ai.Engine
 	history    *history.History
 }
 
-func NewRepl() *Repl {
-	return &Repl{
-		state: ReplState{
+func NewUi(mode RunMode, args string) *Ui {
+	return &Ui{
+		mode: mode,
+		state: UiState{
 			configuring: false,
 			querying:    false,
 			confirming:  false,
 			executing:   false,
+			args:        args,
 			buffer:      "",
 			command:     "",
 			error:       nil,
 		},
-		dimensions: ReplDimensions{
+		dimensions: UiDimensions{
 			150,
 			150,
 		},
-		components: ReplComponents{
+		components: UiComponents{
 			prompt: NewPrompt(ExecPromptMode),
 			renderer: NewRenderer(
 				glamour.WithAutoStyle(),
@@ -73,23 +77,27 @@ func NewRepl() *Repl {
 	}
 }
 
-func (r *Repl) Init() tea.Cmd {
+func (u *Ui) Init() tea.Cmd {
 	config, err := config.NewConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return r.startConfig()
+			return u.startConfig()
 		} else {
 			return tea.Sequence(
-				tea.Println(r.components.renderer.RenderError(err.Error())),
+				tea.Println(u.components.renderer.RenderError(err.Error())),
 				tea.Quit,
 			)
 		}
 	}
 
-	return r.startRepl(config)
+	if u.mode == ReplMode {
+		return u.startRepl(config)
+	} else {
+		return u.startCli(config)
+	}
 }
 
-func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	var (
 		cmds       []tea.Cmd
@@ -100,8 +108,8 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	// spinner
 	case spinner.TickMsg:
-		if r.state.querying {
-			r.components.spinner, spinnerCmd = r.components.spinner.Update(msg)
+		if u.state.querying {
+			u.components.spinner, spinnerCmd = u.components.spinner.Update(msg)
 			cmds = append(
 				cmds,
 				spinnerCmd,
@@ -109,30 +117,30 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	// size
 	case tea.WindowSizeMsg:
-		r.dimensions.width = msg.Width
-		r.dimensions.height = msg.Height
-		r.components.renderer = NewRenderer(
+		u.dimensions.width = msg.Width
+		u.dimensions.height = msg.Height
+		u.components.renderer = NewRenderer(
 			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(r.dimensions.width),
+			glamour.WithWordWrap(u.dimensions.width),
 		)
 	// keyboard
 	case tea.KeyMsg:
 		switch msg.Type {
 		// quit
 		case tea.KeyCtrlC:
-			return r, tea.Quit
+			return u, tea.Quit
 		// history
 		case tea.KeyUp, tea.KeyDown:
-			if !r.state.querying && !r.state.confirming {
+			if !u.state.querying && !u.state.confirming {
 				var input *string
 				if msg.Type == tea.KeyUp {
-					input = r.history.GetPrevious()
+					input = u.history.GetPrevious()
 				} else {
-					input = r.history.GetNext()
+					input = u.history.GetNext()
 				}
 				if input != nil {
-					r.components.prompt.SetValue(*input)
-					r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+					u.components.prompt.SetValue(*input)
+					u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 					cmds = append(
 						cmds,
 						promptCmd,
@@ -141,16 +149,16 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		// switch mode
 		case tea.KeyTab:
-			if !r.state.querying && !r.state.confirming {
-				if r.engine.GetMode() == ai.ChatEngineMode {
-					r.engine.SetMode(ai.ExecEngineMode)
-					r.components.prompt.SetMode(ExecPromptMode)
+			if !u.state.querying && !u.state.confirming {
+				if u.engine.GetMode() == ai.ChatEngineMode {
+					u.engine.SetMode(ai.ExecEngineMode)
+					u.components.prompt.SetMode(ExecPromptMode)
 				} else {
-					r.engine.SetMode(ai.ChatEngineMode)
-					r.components.prompt.SetMode(ChatPromptMode)
+					u.engine.SetMode(ai.ChatEngineMode)
+					u.components.prompt.SetMode(ChatPromptMode)
 				}
-				r.engine.Reset()
-				r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+				u.engine.Reset()
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 				cmds = append(
 					cmds,
 					promptCmd,
@@ -159,32 +167,32 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		// enter
 		case tea.KeyEnter:
-			if r.state.configuring {
-				return r, r.finishConfig(r.components.prompt.GetValue())
+			if u.state.configuring {
+				return u, u.finishConfig(u.components.prompt.GetValue())
 			}
-			if !r.state.querying && !r.state.confirming {
-				input := r.components.prompt.GetValue()
+			if !u.state.querying && !u.state.confirming {
+				input := u.components.prompt.GetValue()
 				if input != "" {
-					inputPrint := r.components.prompt.AsString()
-					r.history.Add(input)
-					r.components.prompt.SetValue("")
-					r.components.prompt.Blur()
-					r.components.prompt, promptCmd = r.components.prompt.Update(msg)
-					if r.engine.GetMode() == ai.ChatEngineMode {
+					inputPrint := u.components.prompt.AsString()
+					u.history.Add(input)
+					u.components.prompt.SetValue("")
+					u.components.prompt.Blur()
+					u.components.prompt, promptCmd = u.components.prompt.Update(msg)
+					if u.engine.GetMode() == ai.ChatEngineMode {
 						cmds = append(
 							cmds,
 							promptCmd,
 							tea.Println(inputPrint),
-							r.startChatStream(input),
-							r.awaitChatStream(),
+							u.startChatStream(input),
+							u.awaitChatStream(),
 						)
 					} else {
 						cmds = append(
 							cmds,
 							promptCmd,
 							tea.Println(inputPrint),
-							r.startExec(input),
-							r.components.spinner.Tick,
+							u.startExec(input),
+							u.components.spinner.Tick,
 						)
 					}
 				}
@@ -192,8 +200,8 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// clear
 		case tea.KeyCtrlL:
-			if !r.state.querying && !r.state.confirming {
-				r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+			if !u.state.querying && !u.state.confirming {
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 				cmds = append(
 					cmds,
 					promptCmd,
@@ -204,11 +212,11 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// reset
 		case tea.KeyCtrlR:
-			if !r.state.querying && !r.state.confirming {
-				r.history.Reset()
-				r.engine.Reset()
-				r.components.prompt.SetValue("")
-				r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+			if !u.state.querying && !u.state.confirming {
+				u.history.Reset()
+				u.engine.Reset()
+				u.components.prompt.SetValue("")
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 				cmds = append(
 					cmds,
 					promptCmd,
@@ -219,48 +227,56 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// edit settings
 		case tea.KeyCtrlS:
-			if !r.state.querying && !r.state.confirming && !r.state.configuring && !r.state.executing {
-				r.state.executing = true
-				r.state.buffer = ""
-				r.state.command = ""
-				r.components.prompt.Blur()
-				r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+			if !u.state.querying && !u.state.confirming && !u.state.configuring && !u.state.executing {
+				u.state.executing = true
+				u.state.buffer = ""
+				u.state.command = ""
+				u.components.prompt.Blur()
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 				cmds = append(
 					cmds,
 					promptCmd,
-					r.editSettings(),
+					u.editSettings(),
 				)
 			}
 
 		default:
-			if r.state.confirming {
+			if u.state.confirming {
 				if strings.ToLower(msg.String()) == "y" {
-					r.state.confirming = false
-					r.state.executing = true
-					r.state.buffer = ""
-					r.components.prompt.SetValue("")
-					return r, tea.Sequence(
+					u.state.confirming = false
+					u.state.executing = true
+					u.state.buffer = ""
+					u.components.prompt.SetValue("")
+					return u, tea.Sequence(
 						promptCmd,
-						r.execCommand(r.state.command),
+						u.execCommand(u.state.command),
 					)
 				} else {
-					r.state.confirming = false
-					r.state.executing = false
-					r.state.buffer = ""
-					r.components.prompt, promptCmd = r.components.prompt.Update(msg)
-					r.components.prompt.SetValue("")
-					r.components.prompt.Focus()
-					cmds = append(
-						cmds,
-						promptCmd,
-						tea.Println(fmt.Sprintf("\n%s\n", r.components.renderer.RenderWarning("[cancel]"))),
-						textinput.Blink,
-					)
+					u.state.confirming = false
+					u.state.executing = false
+					u.state.buffer = ""
+					u.components.prompt, promptCmd = u.components.prompt.Update(msg)
+					u.components.prompt.SetValue("")
+					u.components.prompt.Focus()
+					if u.mode == ReplMode {
+						cmds = append(
+							cmds,
+							promptCmd,
+							tea.Println(fmt.Sprintf("\n%s\n", u.components.renderer.RenderWarning("[cancel]"))),
+							textinput.Blink,
+						)
+					} else {
+						return u, tea.Sequence(
+							promptCmd,
+							tea.Println(fmt.Sprintf("\n%s\n", u.components.renderer.RenderWarning("[cancel]"))),
+							tea.Quit,
+						)
+					}
 				}
-				r.state.command = ""
+				u.state.command = ""
 			} else {
-				r.components.prompt.Focus()
-				r.components.prompt, promptCmd = r.components.prompt.Update(msg)
+				u.components.prompt.Focus()
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 				cmds = append(
 					cmds,
 					promptCmd,
@@ -270,20 +286,25 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	// engine exec feedback
 	case ai.EngineExecOutput:
-		//r.state.querying = false
 		var output string
 		if msg.IsExecutable() {
-			r.state.confirming = true
-			r.state.command = msg.GetCommand()
-			output = r.components.renderer.RenderContent(fmt.Sprintf("`%s`", r.state.command))
-			output += fmt.Sprintf("  %s\n\n  confirm execution? [y/N]", r.components.renderer.RenderHelp(msg.GetExplanation()))
-			r.components.prompt.Blur()
+			u.state.confirming = true
+			u.state.command = msg.GetCommand()
+			output = u.components.renderer.RenderContent(fmt.Sprintf("`%s`", u.state.command))
+			output += fmt.Sprintf("  %s\n\n  confirm execution? [y/N]", u.components.renderer.RenderHelp(msg.GetExplanation()))
+			u.components.prompt.Blur()
 		} else {
-			output = r.components.renderer.RenderContent(msg.GetExplanation())
-			r.components.prompt.Focus()
+			output = u.components.renderer.RenderContent(msg.GetExplanation())
+			u.components.prompt.Focus()
+			if u.mode == CliMode {
+				return u, tea.Sequence(
+					tea.Println(output),
+					tea.Quit,
+				)
+			}
 		}
-		r.components.prompt, promptCmd = r.components.prompt.Update(msg)
-		return r, tea.Sequence(
+		u.components.prompt, promptCmd = u.components.prompt.Update(msg)
+		return u, tea.Sequence(
 			promptCmd,
 			textinput.Blink,
 			tea.Println(output),
@@ -291,64 +312,78 @@ func (r *Repl) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// engine chat stream feedback
 	case ai.EngineChatStreamOutput:
 		if msg.IsLast() {
-			output := r.components.renderer.RenderContent(r.state.buffer)
-			r.state.buffer = ""
-			r.components.prompt.Focus()
-			return r, tea.Sequence(
-				tea.Println(output),
-				textinput.Blink,
-			)
+			output := u.components.renderer.RenderContent(u.state.buffer)
+			u.state.buffer = ""
+			u.components.prompt.Focus()
+			if u.mode == CliMode {
+				return u, tea.Sequence(
+					tea.Println(output),
+					tea.Quit,
+				)
+			} else {
+				return u, tea.Sequence(
+					tea.Println(output),
+					textinput.Blink,
+				)
+			}
 		} else {
-			return r, r.awaitChatStream()
+			return u, u.awaitChatStream()
 		}
 	// runner feedback
 	case run.RunOutput:
-		r.state.querying = false
-		r.components.prompt, promptCmd = r.components.prompt.Update(msg)
-		r.components.prompt.Focus()
-		output := r.components.renderer.RenderSuccess(fmt.Sprintf("\n%s\n", msg.GetSuccessMessage()))
+		u.state.querying = false
+		u.components.prompt, promptCmd = u.components.prompt.Update(msg)
+		u.components.prompt.Focus()
+		output := u.components.renderer.RenderSuccess(fmt.Sprintf("\n%s\n", msg.GetSuccessMessage()))
 		if msg.HasError() {
-			output = r.components.renderer.RenderError(fmt.Sprintf("\n%s\n", msg.GetErrorMessage()))
+			output = u.components.renderer.RenderError(fmt.Sprintf("\n%s\n", msg.GetErrorMessage()))
 		}
-		return r, tea.Sequence(
-			tea.Println(output),
-			promptCmd,
-			textinput.Blink,
-		)
+		if u.mode == CliMode {
+			return u, tea.Sequence(
+				tea.Println(output),
+				tea.Quit,
+			)
+		} else {
+			return u, tea.Sequence(
+				tea.Println(output),
+				promptCmd,
+				textinput.Blink,
+			)
+		}
 	// errors
 	case error:
-		r.state.error = msg
-		return r, nil
+		u.state.error = msg
+		return u, nil
 	}
 
-	return r, tea.Batch(cmds...)
+	return u, tea.Batch(cmds...)
 }
 
-func (r *Repl) View() string {
-	if r.state.error != nil {
-		return r.components.renderer.RenderError(fmt.Sprintf("[error] %s", r.state.error))
+func (u *Ui) View() string {
+	if u.state.error != nil {
+		return u.components.renderer.RenderError(fmt.Sprintf("[error] %s", u.state.error))
 	}
 
-	if r.state.configuring {
+	if u.state.configuring {
 		return fmt.Sprintf(
 			"%s\n%s",
-			r.components.renderer.RenderContent(r.state.buffer),
-			r.components.prompt.View(),
+			u.components.renderer.RenderContent(u.state.buffer),
+			u.components.prompt.View(),
 		)
 	}
 
-	if !r.state.querying && !r.state.confirming && !r.state.executing {
-		return fmt.Sprintf("%s", r.components.prompt.View())
+	if !u.state.querying && !u.state.confirming && !u.state.executing {
+		return fmt.Sprintf("%s", u.components.prompt.View())
 	}
 
-	if r.engine.GetMode() == ai.ChatEngineMode {
-		return r.components.renderer.RenderContent(r.state.buffer)
+	if u.engine.GetMode() == ai.ChatEngineMode {
+		return u.components.renderer.RenderContent(u.state.buffer)
 	} else {
-		if r.state.querying {
-			return r.components.spinner.View()
+		if u.state.querying {
+			return u.components.spinner.View()
 		} else {
-			if !r.state.executing {
-				return r.components.renderer.RenderContent(r.state.buffer)
+			if !u.state.executing {
+				return u.components.renderer.RenderContent(u.state.buffer)
 			}
 		}
 	}
@@ -356,81 +391,146 @@ func (r *Repl) View() string {
 	return ""
 }
 
-func (r *Repl) startRepl(config *config.Config) tea.Cmd {
-	return func() tea.Msg {
-		r.config = config
-		engine, err := ai.NewEngine(ai.ExecEngineMode, config)
-		if err != nil {
-			return err
-		}
+func (u *Ui) startRepl(config *config.Config) tea.Cmd {
+	return tea.Sequence(
+		tea.ClearScreen,
+		textinput.Blink,
+		func() tea.Msg {
+			u.config = config
+			engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+			if err != nil {
+				return err
+			}
 
-		r.engine = engine
-		r.state.buffer = "Welcome \n\n"
-		r.state.command = ""
-		r.components.prompt = NewPrompt(ExecPromptMode)
+			u.engine = engine
+			u.state.buffer = "Welcome \n\n"
+			u.state.command = ""
+			u.components.prompt = NewPrompt(ExecPromptMode)
 
-		return tea.Sequence(
-			tea.ClearScreen,
-			textinput.Blink,
+			return nil
+		},
+	)
+}
+
+func (u *Ui) startCli(config *config.Config) tea.Cmd {
+
+	u.config = config
+	engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+	if err != nil {
+		u.state.error = err
+		return nil
+	}
+
+	u.engine = engine
+	u.state.querying = true
+	u.state.confirming = false
+	u.state.buffer = ""
+	u.state.command = ""
+
+	if u.engine.GetMode() == ai.ExecEngineMode {
+		return tea.Batch(
+			u.components.spinner.Tick,
+			func() tea.Msg {
+				output, err := u.engine.ExecCompletion(u.state.args)
+				u.state.querying = false
+				if err != nil {
+					return err
+				}
+
+				return *output
+			},
+		)
+	} else {
+		return tea.Batch(
+			u.startChatStream(u.state.args),
+			u.awaitChatStream(),
 		)
 	}
 }
 
-func (r *Repl) startConfig() tea.Cmd {
+func (u *Ui) startConfig() tea.Cmd {
 	return func() tea.Msg {
-		r.state.configuring = true
-		r.state.querying = false
-		r.state.confirming = false
-		r.state.executing = false
+		u.state.configuring = true
+		u.state.querying = false
+		u.state.confirming = false
+		u.state.executing = false
 
-		r.state.buffer = "**Yo**, welcome! 👋  \n\n"
-		r.state.buffer += "I cannot find a configuration file, please enter an **OpenAI API key** "
-		r.state.buffer += "from https://platform.openai.com/account/api-keys so I can generate it for you."
+		u.state.buffer = "**Yo**, welcome! 👋  \n\n"
+		u.state.buffer += "I cannot find a configuration file, please enter an **OpenAI API key** "
+		u.state.buffer += "from https://platform.openai.com/account/api-keys so I can generate it for you."
 
-		r.state.command = ""
+		u.state.command = ""
 
-		r.components.prompt = NewPrompt(ConfigPromptMode)
+		u.components.prompt = NewPrompt(ConfigPromptMode)
 
 		return nil
 	}
 }
 
-func (r *Repl) finishConfig(key string) tea.Cmd {
-	return func() tea.Msg {
-		r.state.configuring = false
+func (u *Ui) finishConfig(key string) tea.Cmd {
 
-		config, err := config.WriteConfig(key)
-		if err != nil {
-			return err
-		}
+	u.state.configuring = false
 
-		r.config = config
-		engine, err := ai.NewEngine(ai.ExecEngineMode, config)
-		if err != nil {
-			return err
-		}
+	config, err := config.WriteConfig(key)
+	if err != nil {
+		u.state.error = err
+		return nil
+	}
 
-		r.engine = engine
-		r.state.buffer = ""
-		r.state.command = ""
-		r.components.prompt = NewPrompt(ExecPromptMode)
+	u.config = config
+	engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+	if err != nil {
+		u.state.error = err
+		return nil
+	}
 
+	u.engine = engine
+
+	if u.mode == ReplMode {
 		return tea.Sequence(
 			tea.ClearScreen,
 			textinput.Blink,
+			func() tea.Msg {
+
+				u.state.buffer = ""
+				u.state.command = ""
+				u.components.prompt = NewPrompt(ExecPromptMode)
+
+				return nil
+			},
 		)
+	} else {
+		if u.engine.GetMode() == ai.ExecEngineMode {
+			return tea.Batch(
+				u.components.spinner.Tick,
+				func() tea.Msg {
+					output, err := u.engine.ExecCompletion(u.state.args)
+					u.state.querying = false
+					if err != nil {
+						return err
+					}
+
+					return *output
+				},
+			)
+		} else {
+			return tea.Batch(
+				u.startChatStream(u.state.args),
+				u.awaitChatStream(),
+			)
+		}
 	}
 }
 
-func (r *Repl) startExec(input string) tea.Cmd {
+func (u *Ui) startExec(input string) tea.Cmd {
 	return func() tea.Msg {
-		r.state.querying = true
-		r.state.confirming = false
-		r.state.buffer = ""
-		r.state.command = ""
+		u.state.querying = true
+		u.state.confirming = false
+		u.state.buffer = ""
+		u.state.command = ""
 
-		output, err := r.engine.ExecCompletion(input)
-		r.state.querying = false
+		output, err := u.engine.ExecCompletion(input)
+		u.state.querying = false
 		if err != nil {
 			return err
 		}
@@ -439,15 +539,15 @@ func (r *Repl) startExec(input string) tea.Cmd {
 	}
 }
 
-func (r *Repl) startChatStream(input string) tea.Cmd {
+func (u *Ui) startChatStream(input string) tea.Cmd {
 	return func() tea.Msg {
-		r.state.querying = true
-		r.state.executing = false
-		r.state.confirming = false
-		r.state.buffer = ""
-		r.state.command = ""
+		u.state.querying = true
+		u.state.executing = false
+		u.state.confirming = false
+		u.state.buffer = ""
+		u.state.command = ""
 
-		err := r.engine.ChatStreamCompletion(input)
+		err := u.engine.ChatStreamCompletion(input)
 		if err != nil {
 			return err
 		}
@@ -456,49 +556,49 @@ func (r *Repl) startChatStream(input string) tea.Cmd {
 	}
 }
 
-func (r *Repl) awaitChatStream() tea.Cmd {
+func (u *Ui) awaitChatStream() tea.Cmd {
 	return func() tea.Msg {
 		var output ai.EngineChatStreamOutput
 
-		output = <-r.engine.GetChannel()
-		r.state.buffer += output.GetContent()
-		r.state.querying = !output.IsLast()
+		output = <-u.engine.GetChannel()
+		u.state.buffer += output.GetContent()
+		u.state.querying = !output.IsLast()
 
 		return output
 	}
 }
 
-func (r *Repl) execCommand(input string) tea.Cmd {
+func (u *Ui) execCommand(input string) tea.Cmd {
 
-	r.state.querying = false
-	r.state.confirming = false
-	r.state.executing = true
+	u.state.querying = false
+	u.state.confirming = false
+	u.state.executing = true
 
 	c := run.PrepareInteractiveCommand(input)
 
 	return tea.ExecProcess(c, func(error error) tea.Msg {
-		r.state.executing = false
-		r.state.command = ""
+		u.state.executing = false
+		u.state.command = ""
 
 		return run.NewRunOutput(error, "[error]", "[ok]")
 	})
 }
 
-func (r *Repl) editSettings() tea.Cmd {
+func (u *Ui) editSettings() tea.Cmd {
 
-	r.state.querying = false
-	r.state.confirming = false
-	r.state.executing = true
+	u.state.querying = false
+	u.state.confirming = false
+	u.state.executing = true
 
 	c := run.PrepareEditSettingsCommand(fmt.Sprintf(
 		"%s %s",
-		r.config.GetSystemConfig().GetEditor(),
-		r.config.GetSystemConfig().GetConfigFile(),
+		u.config.GetSystemConfig().GetEditor(),
+		u.config.GetSystemConfig().GetConfigFile(),
 	))
 
 	return tea.ExecProcess(c, func(error error) tea.Msg {
-		r.state.executing = false
-		r.state.command = ""
+		u.state.executing = false
+		u.state.command = ""
 
 		if error != nil {
 			return run.NewRunOutput(error, "[settings edition error]", "")
@@ -509,12 +609,12 @@ func (r *Repl) editSettings() tea.Cmd {
 			return run.NewRunOutput(error, "[settings edition error]", "")
 		}
 
-		r.config = config
+		u.config = config
 		engine, error := ai.NewEngine(ai.ExecEngineMode, config)
 		if error != nil {
 			return run.NewRunOutput(error, "[settings edition error]", "")
 		}
-		r.engine = engine
+		u.engine = engine
 
 		return run.NewRunOutput(nil, "", "[settings edition success]")
 	})

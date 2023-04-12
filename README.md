@@ -65,7 +65,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, and wi
 yo
 ```
 
-This will open a [REPL loop](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), with 2 types of prompts
+This will open a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), with 2 types of prompts
 
 - `🚀 exec`: will try to provide a command line for what you're asking
 - `💬 chat`: will engage discussion to help you the best way possible

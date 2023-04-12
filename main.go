@@ -28,14 +28,7 @@ func main() {
 		mode = ui.CliMode
 	}
 
-	var program *tea.Program
-	if mode == ui.ReplMode {
-		program = tea.NewProgram(ui.NewRepl())
-	} else {
-		program = tea.NewProgram(ui.NewCli(strings.Join(args, " ")))
-	}
-
-	if _, err := program.Run(); err != nil {
+	if _, err := tea.NewProgram(ui.NewUi(mode, strings.Join(args, " "))).Run(); err != nil {
 		log.Fatal(err)
 	}
 }
