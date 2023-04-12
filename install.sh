@@ -48,16 +48,16 @@ BINNAME="${BINNAME:-yo}"
 BINDIR="${BINDIR:-/usr/local/bin}"
 
 # Define the URLs for the release assets
-URL="https://github.com/$REPOOWNER/$REPONAME/releases/download/yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
+URL="https://github.com/$REPOOWNER/$REPONAME/releases/download/${RELEASETAG}/yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
 
 echo "Downloading from $URL"
 echo
 
-curl -q --fail --location --progress-bar "$URL"
-cd "$bin_dir"
-tar xzf "$exe.tar.gz"
-chmod +x "$exe"
-rm "$exe.tar.gz"
+curl -q --fail --location --progress-bar --output "yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz" "$URL"
+tar xzf "yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
+chmod +x $BINNAME
+sudo mv $BINNAME $BINDIR/$BINNAME
+rm "yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
 
 echo
 echo "Installation complete!"

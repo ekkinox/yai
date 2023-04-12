@@ -35,7 +35,7 @@ And you can also give any supplementary preferences to fine tune your user exper
 ## Installation
 
 ```shell
-go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
+curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 ```
 
 ## Configuration
