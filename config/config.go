@@ -50,7 +50,7 @@ func NewConfig() (*Config, error) {
 	}, nil
 }
 
-func WriteConfig(key string) (*Config, error) {
+func WriteConfig(key string, write bool) (*Config, error) {
 	system := system.Analyse()
 
 	viper.Set(openai_key, key)
@@ -59,9 +59,11 @@ func WriteConfig(key string) (*Config, error) {
 	viper.SetDefault(user_default_prompt_mode, "exec")
 	viper.SetDefault(user_preferences, "")
 
-	err := viper.SafeWriteConfigAs(system.GetConfigFile())
-	if err != nil {
-		return nil, err
+	if write {
+		err := viper.SafeWriteConfigAs(system.GetConfigFile())
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return NewConfig()

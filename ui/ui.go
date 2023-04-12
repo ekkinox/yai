@@ -495,7 +495,7 @@ func (u *Ui) startConfig() tea.Cmd {
 func (u *Ui) finishConfig(key string) tea.Cmd {
 	u.state.configuring = false
 
-	config, err := config.WriteConfig(key)
+	config, err := config.WriteConfig(key, true)
 	if err != nil {
 		u.state.error = err
 		return nil
