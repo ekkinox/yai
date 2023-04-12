@@ -1,6 +1,6 @@
-# Yo
+# 🚀 Yo 💬
 
-> Your AI powered terminal assistant.
+> AI powered terminal assistant.
 
 ![Demo](doc/demo.gif)
 
@@ -19,9 +19,9 @@
 
 `Yo` is an AI powered assistant for your terminal.
 
-You can converse in your natural language, and it will provide you with either pre-built command lines or engage in discussion to assist you.
+You can converse with it using your natural language, and it will provide you with ready to use command lines, or engage in a discussion to assist you.
 
-To be the most accurate possible, it is already aware of your:
+`Yo` is already aware of your:
 - operating system
 - distribution
 - username
@@ -29,7 +29,7 @@ To be the most accurate possible, it is already aware of your:
 - home directory
 - preferred editor
 
-You can also give any preferences to fine tune your user experience (see [configuration](#configuration) section).
+And you can also give any supplementary preferences to fine tune your user experience (see [configuration](#configuration) section).
 
 ## Installation
 
@@ -39,25 +39,25 @@ go get && sudo go build -o /usr/local/bin/yo && sudo chmod +x /usr/local/bin/yo
 
 ## Configuration
 
-At the first execution, your assistant will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
+At the first execution, `Yo` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
 
-It will then generate your configuration in the file `~/.config/yo.json`, and will have the following structure:
+It will then generate your configuration in the file `~/.config/yo.json`, with the following structure:
 
 ```JS
 {
-  "openai_key": "sk-xxxxxxxxx",  // your OpenAI API key
-  "openai_proxy": "",            // proxy to connect to OpenAI API if needed
-  "openai_temperature": 0.2,     // chatGPT temperature
-  "user_default_mode": "exec",   // prefered run mode: "exec" (default) or "chat"
-  "user_preferences": ""         // to express preferences in natural language
+  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key
+  "openai_proxy": "",                 // OpenAI API proxy (if needed)
+  "openai_temperature": 0.2,          // OpenAI API temperature
+  "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
+  "user_preferences": ""              // user preferences, expressed in natural language
 }
 ```
 
 ## Usage
 
-`Yo` provides 2 modes:
-- REPL: terminal user interface, made to offer interactive prompts in a loop
-- CLI: command line interface, made to perform a single execution
+`Yo` provides 2 run modes:
+- **REPL mode**: terminal user interface, made to offer interactive prompts in a loop
+- **CLI mode**: command line interface, made to perform a single run
 
 ### REPL mode
 
@@ -65,28 +65,39 @@ It will then generate your configuration in the file `~/.config/yo.json`, and wi
 yo
 ```
 
-This will open a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop), with 2 types of prompts
+This will open a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) interface, with 2 types of prompts
 
-- `💻 exec`: will try to provide a command line for what you're asking
-- `💬 chat`: will engage discussion to help you the best way possible
+- `🚀 exec`: will generate a command line to execute for what you're asking
+- `💬 chat`: will engage in a discussion to help you the best way possible
 
-You also can use the following shortcuts:
+You also can use the following `keyboard shortcuts`:
 
-| Keys     | Description                                    |
-|----------|------------------------------------------------|
-| `↑` `↓`  | Navigate in history                            |
-| `tab`    | Switch between `💻 exec` and `💬 chat` prompts |
-| `ctrl+s` | Edit settings                                  |
-| `ctrl+r` | Clear terminal and reset discussion history    |
-| `ctrl+l` | Clear terminal but keep discussion history     |
-| `ctrl+c` | Exit or interrupt current command / completion |
+| Keys     | Description                                           |
+|----------|-------------------------------------------------------|
+| `↑` `↓`  | Navigate in history                                   |
+| `tab`    | Switch between `🚀 exec` and `💬 chat` prompt modes   |
+| `ctrl+s` | Open editor on configuration file                     |
+| `ctrl+r` | Clear terminal and reset discussion history           |
+| `ctrl+l` | Clear terminal but keep discussion history            |
+| `ctrl+c` | Exit or interrupt command execution / chat completion |
 
 
-### CLI mode (*Coming soon*)
+### CLI mode
 
 ```shell
-yo list all my files in my home directory
+yo list all javascript files
 ```
 
-This will perform a single execution, according to your input.
+This will perform a single run, using your [preferred prompt mode](#configuration).
 
+```shell
+yo -e list all javascript files
+```
+
+This will perform a single command line generation, enforcing `🚀 exec` prompt mode usage with `-e`.
+
+```shell
+yo -c how can I find javascript files
+```
+
+This will reply to a single question, enforcing `💬 chat` prompt mode usage with `-c`.

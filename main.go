@@ -17,8 +17,8 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	var exec, chat bool
-	flag.BoolVar(&exec, "exec", false, "Exec mode")
-	flag.BoolVar(&chat, "chat", false, "Chat mode")
+	flag.BoolVar(&exec, "e", false, "exec prompt mode")
+	flag.BoolVar(&chat, "c", false, "chat prompt mode")
 	flag.Parse()
 
 	args := flag.Args()

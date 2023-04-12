@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const exec_icon = "💻 > "
+const exec_icon = "🚀 > "
 const exec_placeholder = "Execute something..."
 const config_icon = "🔒 > "
 const config_placeholder = "Enter your OpenAI key..."

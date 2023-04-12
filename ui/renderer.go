@@ -5,7 +5,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const exec_color = "#edc95e"
+const exec_color = "#ffa657"
 const config_color = "#ffffff"
 const chat_color = "#66b3ff"
 const help_color = "#aaaaaa"
