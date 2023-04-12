@@ -85,19 +85,19 @@ You also can use the following `keyboard shortcuts`:
 ### CLI mode
 
 ```shell
-yo list all javascript files
+yo explain what is the therory of relativity
 ```
 
-This will perform a single run, using your [preferred prompt mode](#configuration).
+This will perform a single run, using your [preferred](#configuration) prompt mode.
 
 ```shell
-yo -e list all javascript files
+yo -e list all processes listening on port 8080
 ```
 
-This will perform a single command line generation, enforcing `🚀 exec` prompt mode usage with `-e`.
+This will perform a single command line generation (enforcing `🚀 exec` prompt mode usage with `-e`).
 
 ```shell
-yo -c how can I find javascript files
+yo -c generate me a go application example using fiber
 ```
 
-This will reply to a single question, enforcing `💬 chat` prompt mode usage with `-c`.
+This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
