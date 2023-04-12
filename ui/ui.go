@@ -208,6 +208,18 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 
+		// help
+		case tea.KeyCtrlH:
+			if !u.state.configuring && !u.state.querying && !u.state.confirming {
+				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
+				cmds = append(
+					cmds,
+					promptCmd,
+					tea.Println(u.components.renderer.RenderContent(u.components.renderer.RenderHelpMessage())),
+					textinput.Blink,
+				)
+			}
+
 		// clear
 		case tea.KeyCtrlL:
 			if !u.state.querying && !u.state.confirming {

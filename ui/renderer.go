@@ -66,9 +66,22 @@ func (r *Renderer) RenderHelp(in string) string {
 }
 
 func (r *Renderer) RenderConfigMessage() string {
-	welcome := "**Yo**, welcome! 👋  \n\n"
-	welcome += "I cannot find a configuration file, please enter an **OpenAI API key** "
+	welcome := "Yo, welcome! 👋  \n\n"
+	welcome += "I cannot find a configuration file, please enter an `OpenAI API key` "
 	welcome += "from https://platform.openai.com/account/api-keys so I can generate it for you."
 
 	return welcome
+}
+
+func (r *Renderer) RenderHelpMessage() string {
+	help := "**Help**\n"
+	help += "- `↑`/`↓` : navigate in history\n"
+	help += "- `tab`   : switch between `🚀 exec` and `💬 chat` prompt modes\n"
+	help += "- `ctrl+h`: show help\n"
+	help += "- `ctrl+s`: edit settings\n"
+	help += "- `ctrl+r`: clear terminal and reset discussion history\n"
+	help += "- `ctrl+l`: clear terminal but keep discussion history\n"
+	help += "- `ctrl+c`: exit or interrupt command execution\n"
+
+	return help
 }

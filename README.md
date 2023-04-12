@@ -13,6 +13,7 @@
 * [Usage](#usage)
   * [REPL mode](#repl-mode)
   * [CLI mode](#cli-mode)
+* [Changelog](#changelog)
 <!-- TOC -->
 
 ## Description
@@ -72,14 +73,15 @@ This will open a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93
 
 You also can use the following `keyboard shortcuts`:
 
-| Keys     | Description                                           |
-|----------|-------------------------------------------------------|
-| `↑` `↓`  | Navigate in history                                   |
-| `tab`    | Switch between `🚀 exec` and `💬 chat` prompt modes   |
-| `ctrl+s` | Open editor on configuration file                     |
-| `ctrl+r` | Clear terminal and reset discussion history           |
-| `ctrl+l` | Clear terminal but keep discussion history            |
-| `ctrl+c` | Exit or interrupt command execution / chat completion |
+| Keys     | Description                                         |
+|----------|-----------------------------------------------------|
+| `↑` `↓`  | Navigate in history                                 |
+| `tab`    | Switch between `🚀 exec` and `💬 chat` prompt modes |
+| `ctrl+h` | Show help                                           |
+| `ctrl+s` | Edit settings                                       |
+| `ctrl+r` | Clear terminal and reset discussion history         |
+| `ctrl+l` | Clear terminal but keep discussion history          |
+| `ctrl+c` | Exit or interrupt command execution                 |
 
 
 ### CLI mode
@@ -101,3 +103,7 @@ yo -c generate me a go application example using fiber
 ```
 
 This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
+
+## Changelog
+
+See [CHANGELOG](CHANGELOG.md).
