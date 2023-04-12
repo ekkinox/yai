@@ -1,4 +1,4 @@
-# 🚀 Yo 💬
+# 🚀 / 💬 Yo 
 
 > AI powered terminal assistant.
 
