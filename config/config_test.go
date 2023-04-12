@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/ekkinox/yo/system"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/ekkinox/yo/system"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -48,7 +49,6 @@ func testNewConfig(t *testing.T) {
 	assert.Equal(t, "exec", cfg.GetUserConfig().GetDefaultPromptMode())
 	assert.Equal(t, "test_preferences", cfg.GetUserConfig().GetPreferences())
 
-	// Check if the system config is not nil
 	assert.NotNil(t, cfg.GetSystemConfig())
 }
 
