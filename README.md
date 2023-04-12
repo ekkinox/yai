@@ -56,8 +56,8 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 ## Usage
 
 `Yo` provides 2 run modes:
-- **REPL mode**: terminal user interface, made to offer interactive prompts in a loop
-- **CLI mode**: command line interface, made to perform a single run
+- `REPL` mode: terminal user interface, made to offer interactive prompts in a loop
+- `CLI` mode: command line interface, made to perform a single run
 
 ### REPL mode
 
