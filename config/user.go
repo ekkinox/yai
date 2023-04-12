@@ -1,15 +1,15 @@
 package config
 
-const user_default_mode = "USER_DEFAULT_MODE"
+const user_default_prompt_mode = "USER_DEFAULT_PROMPT_MODE"
 const user_preferences = "USER_PREFERENCES"
 
 type UserConfig struct {
-	defaultMode string
-	preferences string
+	defaultPromptMode string
+	preferences       string
 }
 
-func (c UserConfig) GetDefaultMode() string {
-	return c.defaultMode
+func (c UserConfig) GetDefaultPromptMode() string {
+	return c.defaultPromptMode
 }
 
 func (c UserConfig) GetPreferences() string {

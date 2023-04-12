@@ -6,6 +6,7 @@ const (
 	ExecPromptMode PromptMode = iota
 	ConfigPromptMode
 	ChatPromptMode
+	DefaultPromptMode
 )
 
 func (m PromptMode) String() string {
@@ -14,8 +15,10 @@ func (m PromptMode) String() string {
 		return "exec"
 	case ConfigPromptMode:
 		return "config"
-	default:
+	case ChatPromptMode:
 		return "chat"
+	default:
+		return "default"
 	}
 }
 
@@ -25,8 +28,10 @@ func FromString(s string) PromptMode {
 		return ExecPromptMode
 	case "config":
 		return ConfigPromptMode
-	default:
+	case "chat":
 		return ChatPromptMode
+	default:
+		return DefaultPromptMode
 	}
 }
 

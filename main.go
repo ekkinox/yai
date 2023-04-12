@@ -23,12 +23,21 @@ func main() {
 
 	args := flag.Args()
 
-	mode := ui.ReplMode
+	runMode := ui.ReplMode
 	if len(args) > 0 {
-		mode = ui.CliMode
+		runMode = ui.CliMode
 	}
 
-	if _, err := tea.NewProgram(ui.NewUi(mode, strings.Join(args, " "))).Run(); err != nil {
+	promptMode := ui.DefaultPromptMode
+	if exec && !chat {
+		promptMode = ui.ExecPromptMode
+	} else if !exec && chat {
+		promptMode = ui.ChatPromptMode
+	}
+
+	ui := ui.NewUi(runMode, promptMode, strings.Join(args, " "))
+
+	if _, err := tea.NewProgram(ui).Run(); err != nil {
 		log.Fatal(err)
 	}
 }

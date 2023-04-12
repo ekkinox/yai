@@ -48,9 +48,9 @@ type Ui struct {
 	history    *history.History
 }
 
-func NewUi(mode RunMode, args string) *Ui {
+func NewUi(runMode RunMode, promptMode PromptMode, args string) *Ui {
 	return &Ui{
-		mode: mode,
+		mode: runMode,
 		state: UiState{
 			configuring: false,
 			querying:    false,
@@ -66,7 +66,7 @@ func NewUi(mode RunMode, args string) *Ui {
 			150,
 		},
 		components: UiComponents{
-			prompt: NewPrompt(ExecPromptMode),
+			prompt: NewPrompt(promptMode),
 			renderer: NewRenderer(
 				glamour.WithAutoStyle(),
 				glamour.WithWordWrap(150),
@@ -81,7 +81,14 @@ func (u *Ui) Init() tea.Cmd {
 	config, err := config.NewConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return u.startConfig()
+			if u.mode == ReplMode {
+				return tea.Sequence(
+					tea.ClearScreen,
+					u.startConfig(),
+				)
+			} else {
+				return u.startConfig()
+			}
 		} else {
 			return tea.Sequence(
 				tea.Println(u.components.renderer.RenderError(err.Error())),
@@ -455,12 +462,8 @@ func (u *Ui) startConfig() tea.Cmd {
 		u.state.confirming = false
 		u.state.executing = false
 
-		u.state.buffer = "**Yo**, welcome! 👋  \n\n"
-		u.state.buffer += "I cannot find a configuration file, please enter an **OpenAI API key** "
-		u.state.buffer += "from https://platform.openai.com/account/api-keys so I can generate it for you."
-
+		u.state.buffer = u.components.renderer.RenderConfigMessage()
 		u.state.command = ""
-
 		u.components.prompt = NewPrompt(ConfigPromptMode)
 
 		return nil
@@ -489,9 +492,9 @@ func (u *Ui) finishConfig(key string) tea.Cmd {
 	if u.mode == ReplMode {
 		return tea.Sequence(
 			tea.ClearScreen,
+			tea.Println(u.components.renderer.RenderSuccess("\n[settings ok]\n")),
 			textinput.Blink,
 			func() tea.Msg {
-
 				u.state.buffer = ""
 				u.state.command = ""
 				u.components.prompt = NewPrompt(ExecPromptMode)
@@ -501,7 +504,11 @@ func (u *Ui) finishConfig(key string) tea.Cmd {
 		)
 	} else {
 		if u.engine.GetMode() == ai.ExecEngineMode {
-			return tea.Batch(
+			u.state.querying = true
+			u.state.configuring = false
+			u.state.buffer = ""
+			return tea.Sequence(
+				tea.Println(u.components.renderer.RenderSuccess("\n[settings ok]")),
 				u.components.spinner.Tick,
 				func() tea.Msg {
 					output, err := u.engine.ExecCompletion(u.state.args)
@@ -601,21 +608,21 @@ func (u *Ui) editSettings() tea.Cmd {
 		u.state.command = ""
 
 		if error != nil {
-			return run.NewRunOutput(error, "[settings edition error]", "")
+			return run.NewRunOutput(error, "[settings error]", "")
 		}
 
 		config, error := config.NewConfig()
 		if error != nil {
-			return run.NewRunOutput(error, "[settings edition error]", "")
+			return run.NewRunOutput(error, "[settings error]", "")
 		}
 
 		u.config = config
 		engine, error := ai.NewEngine(ai.ExecEngineMode, config)
 		if error != nil {
-			return run.NewRunOutput(error, "[settings edition error]", "")
+			return run.NewRunOutput(error, "[settings error]", "")
 		}
 		u.engine = engine
 
-		return run.NewRunOutput(nil, "", "[settings edition success]")
+		return run.NewRunOutput(nil, "", "[settings ok]")
 	})
 }

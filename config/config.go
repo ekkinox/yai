@@ -43,8 +43,8 @@ func NewConfig() (*Config, error) {
 			proxy:       viper.GetString(openai_proxy),
 		},
 		user: UserConfig{
-			defaultMode: viper.GetString(user_default_mode),
-			preferences: viper.GetString(user_preferences),
+			defaultPromptMode: viper.GetString(user_default_prompt_mode),
+			preferences:       viper.GetString(user_preferences),
 		},
 		system: system,
 	}, nil
@@ -57,7 +57,7 @@ func WriteConfig(key string) (*Config, error) {
 	viper.Set(openai_key, key)
 	viper.SetDefault(openai_temperature, 0.2)
 	viper.SetDefault(openai_proxy, "")
-	viper.SetDefault(user_default_mode, "exec")
+	viper.SetDefault(user_default_prompt_mode, "exec")
 	viper.SetDefault(user_preferences, "")
 
 	err := viper.SafeWriteConfigAs(system.GetConfigFile())

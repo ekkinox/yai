@@ -8,7 +8,7 @@ import (
 const exec_color = "#edc95e"
 const config_color = "#ffffff"
 const chat_color = "#66b3ff"
-const help_color = "#777777"
+const help_color = "#aaaaaa"
 const error_color = "#cc3333"
 const warning_color = "#ffcc00"
 const success_color = "#46b946"
@@ -62,4 +62,12 @@ func (r *Renderer) RenderError(in string) string {
 
 func (r *Renderer) RenderHelp(in string) string {
 	return r.helpRenderer.Render(in)
+}
+
+func (r *Renderer) RenderConfigMessage() string {
+	welcome := "**Yo**, welcome! 👋  \n\n"
+	welcome += "I cannot find a configuration file, please enter an **OpenAI API key** "
+	welcome += "from https://platform.openai.com/account/api-keys so I can generate it for you."
+
+	return welcome
 }
