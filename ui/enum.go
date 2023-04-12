@@ -22,7 +22,7 @@ func (m PromptMode) String() string {
 	}
 }
 
-func FromString(s string) PromptMode {
+func GetPromptModeFromString(s string) PromptMode {
 	switch s {
 	case "exec":
 		return ExecPromptMode

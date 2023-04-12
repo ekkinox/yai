@@ -17,6 +17,9 @@ import (
 )
 
 type UiState struct {
+	error       error
+	runMode     RunMode
+	promptMode  PromptMode
 	configuring bool
 	querying    bool
 	confirming  bool
@@ -24,7 +27,6 @@ type UiState struct {
 	args        string
 	buffer      string
 	command     string
-	error       error
 }
 
 type UiDimensions struct {
@@ -39,7 +41,6 @@ type UiComponents struct {
 }
 
 type Ui struct {
-	mode       RunMode
 	state      UiState
 	dimensions UiDimensions
 	components UiComponents
@@ -50,8 +51,10 @@ type Ui struct {
 
 func NewUi(runMode RunMode, promptMode PromptMode, args string) *Ui {
 	return &Ui{
-		mode: runMode,
 		state: UiState{
+			error:       nil,
+			runMode:     runMode,
+			promptMode:  promptMode,
 			configuring: false,
 			querying:    false,
 			confirming:  false,
@@ -59,7 +62,6 @@ func NewUi(runMode RunMode, promptMode PromptMode, args string) *Ui {
 			args:        args,
 			buffer:      "",
 			command:     "",
-			error:       nil,
 		},
 		dimensions: UiDimensions{
 			150,
@@ -81,7 +83,7 @@ func (u *Ui) Init() tea.Cmd {
 	config, err := config.NewConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			if u.mode == ReplMode {
+			if u.state.runMode == ReplMode {
 				return tea.Sequence(
 					tea.ClearScreen,
 					u.startConfig(),
@@ -97,7 +99,7 @@ func (u *Ui) Init() tea.Cmd {
 		}
 	}
 
-	if u.mode == ReplMode {
+	if u.state.runMode == ReplMode {
 		return u.startRepl(config)
 	} else {
 		return u.startCli(config)
@@ -157,12 +159,14 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// switch mode
 		case tea.KeyTab:
 			if !u.state.querying && !u.state.confirming {
-				if u.engine.GetMode() == ai.ChatEngineMode {
-					u.engine.SetMode(ai.ExecEngineMode)
+				if u.state.promptMode == ChatPromptMode {
+					u.state.promptMode = ExecPromptMode
 					u.components.prompt.SetMode(ExecPromptMode)
+					u.engine.SetMode(ai.ExecEngineMode)
 				} else {
-					u.engine.SetMode(ai.ChatEngineMode)
+					u.state.promptMode = ChatPromptMode
 					u.components.prompt.SetMode(ChatPromptMode)
+					u.engine.SetMode(ai.ChatEngineMode)
 				}
 				u.engine.Reset()
 				u.components.prompt, promptCmd = u.components.prompt.Update(msg)
@@ -185,7 +189,7 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					u.components.prompt.SetValue("")
 					u.components.prompt.Blur()
 					u.components.prompt, promptCmd = u.components.prompt.Update(msg)
-					if u.engine.GetMode() == ai.ChatEngineMode {
+					if u.state.promptMode == ChatPromptMode {
 						cmds = append(
 							cmds,
 							promptCmd,
@@ -265,7 +269,7 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					u.components.prompt, promptCmd = u.components.prompt.Update(msg)
 					u.components.prompt.SetValue("")
 					u.components.prompt.Focus()
-					if u.mode == ReplMode {
+					if u.state.runMode == ReplMode {
 						cmds = append(
 							cmds,
 							promptCmd,
@@ -303,7 +307,7 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			output = u.components.renderer.RenderContent(msg.GetExplanation())
 			u.components.prompt.Focus()
-			if u.mode == CliMode {
+			if u.state.runMode == CliMode {
 				return u, tea.Sequence(
 					tea.Println(output),
 					tea.Quit,
@@ -322,7 +326,7 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			output := u.components.renderer.RenderContent(u.state.buffer)
 			u.state.buffer = ""
 			u.components.prompt.Focus()
-			if u.mode == CliMode {
+			if u.state.runMode == CliMode {
 				return u, tea.Sequence(
 					tea.Println(output),
 					tea.Quit,
@@ -345,7 +349,7 @@ func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.HasError() {
 			output = u.components.renderer.RenderError(fmt.Sprintf("\n%s\n", msg.GetErrorMessage()))
 		}
-		if u.mode == CliMode {
+		if u.state.runMode == CliMode {
 			return u, tea.Sequence(
 				tea.Println(output),
 				tea.Quit,
@@ -383,7 +387,7 @@ func (u *Ui) View() string {
 		return fmt.Sprintf("%s", u.components.prompt.View())
 	}
 
-	if u.engine.GetMode() == ai.ChatEngineMode {
+	if u.state.promptMode == ChatPromptMode {
 		return u.components.renderer.RenderContent(u.state.buffer)
 	} else {
 		if u.state.querying {
@@ -404,7 +408,17 @@ func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 		textinput.Blink,
 		func() tea.Msg {
 			u.config = config
-			engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+
+			if u.state.promptMode == DefaultPromptMode {
+				u.state.promptMode = GetPromptModeFromString(config.GetUserConfig().GetDefaultPromptMode())
+			}
+
+			engineMode := ai.ExecEngineMode
+			if u.state.promptMode == ChatPromptMode {
+				engineMode = ai.ChatEngineMode
+			}
+
+			engine, err := ai.NewEngine(engineMode, config)
 			if err != nil {
 				return err
 			}
@@ -412,7 +426,7 @@ func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 			u.engine = engine
 			u.state.buffer = "Welcome \n\n"
 			u.state.command = ""
-			u.components.prompt = NewPrompt(ExecPromptMode)
+			u.components.prompt = NewPrompt(u.state.promptMode)
 
 			return nil
 		},
@@ -422,7 +436,17 @@ func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 func (u *Ui) startCli(config *config.Config) tea.Cmd {
 
 	u.config = config
-	engine, err := ai.NewEngine(ai.ExecEngineMode, config)
+
+	if u.state.promptMode == DefaultPromptMode {
+		u.state.promptMode = GetPromptModeFromString(config.GetUserConfig().GetDefaultPromptMode())
+	}
+
+	engineMode := ai.ExecEngineMode
+	if u.state.promptMode == ChatPromptMode {
+		engineMode = ai.ChatEngineMode
+	}
+
+	engine, err := ai.NewEngine(engineMode, config)
 	if err != nil {
 		u.state.error = err
 		return nil
@@ -434,7 +458,7 @@ func (u *Ui) startCli(config *config.Config) tea.Cmd {
 	u.state.buffer = ""
 	u.state.command = ""
 
-	if u.engine.GetMode() == ai.ExecEngineMode {
+	if u.state.promptMode == ExecPromptMode {
 		return tea.Batch(
 			u.components.spinner.Tick,
 			func() tea.Msg {
@@ -489,7 +513,7 @@ func (u *Ui) finishConfig(key string) tea.Cmd {
 
 	u.engine = engine
 
-	if u.mode == ReplMode {
+	if u.state.runMode == ReplMode {
 		return tea.Sequence(
 			tea.ClearScreen,
 			tea.Println(u.components.renderer.RenderSuccess("\n[settings ok]\n")),
@@ -503,7 +527,7 @@ func (u *Ui) finishConfig(key string) tea.Cmd {
 			},
 		)
 	} else {
-		if u.engine.GetMode() == ai.ExecEngineMode {
+		if u.state.promptMode == ExecPromptMode {
 			u.state.querying = true
 			u.state.configuring = false
 			u.state.buffer = ""
