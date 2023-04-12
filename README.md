@@ -38,6 +38,8 @@ And you can also give any supplementary preferences to fine tune your user exper
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 ```
 
+You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
+
 ## Usage
 
 `Yo` provides 2 run modes:
