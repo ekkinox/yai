@@ -18,7 +18,7 @@ func TestConfig(t *testing.T) {
 }
 
 func setupViper(t *testing.T) {
-
+	t.Helper()
 	system := system.Analyse()
 
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
@@ -33,6 +33,7 @@ func setupViper(t *testing.T) {
 }
 
 func cleanup(t *testing.T) {
+	t.Helper()
 	require.NoError(t, os.Remove("/tmp/yo.json"))
 }
 
