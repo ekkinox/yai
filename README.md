@@ -9,10 +9,10 @@
 <!-- TOC -->
 * [Description](#description)
 * [Installation](#installation)
-* [Configuration](#configuration)
 * [Usage](#usage)
   * [REPL mode](#repl-mode)
   * [CLI mode](#cli-mode)
+* [Configuration](#configuration)
 * [Changelog](#changelog)
 <!-- TOC -->
 
@@ -36,22 +36,6 @@ And you can also give any supplementary preferences to fine tune your user exper
 
 ```shell
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
-```
-
-## Configuration
-
-At the first execution, `Yo` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
-
-It will then generate your configuration in the file `~/.config/yo.json`, with the following structure:
-
-```JS
-{
-  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key
-  "openai_proxy": "",                 // OpenAI API proxy (if needed)
-  "openai_temperature": 0.2,          // OpenAI API temperature
-  "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
-  "user_preferences": ""              // user preferences, expressed in natural language
-}
 ```
 
 ## Usage
@@ -103,6 +87,22 @@ yo -c generate me a go application example using fiber
 ```
 
 This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
+
+## Configuration
+
+At the first execution, `Yo` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
+
+It will then generate your configuration in the file `~/.config/yo.json`, with the following structure:
+
+```JS
+{
+  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key
+  "openai_proxy": "",                 // OpenAI API proxy (if needed)
+  "openai_temperature": 0.2,          // OpenAI API temperature
+  "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
+  "user_preferences": ""              // user preferences, expressed in natural language
+}
+```
 
 ## Changelog
 
