@@ -18,7 +18,6 @@ case ${KERNEL} in
         ;;
 esac
 
-
 MACHINE=$(uname -m 2>/dev/null || /usr/bin/uname -m)
 case ${MACHINE} in
     arm|armv7*)
@@ -43,11 +42,8 @@ case ${MACHINE} in
         ;;
 esac
 
-# Define the location of the binary and the directory to install it to (can be overridden by the user)
 BINNAME="${BINNAME:-yo}"
 BINDIR="${BINDIR:-/usr/local/bin}"
-
-# Define the URLs for the release assets
 URL="https://github.com/$REPOOWNER/$REPONAME/releases/download/${RELEASETAG}/yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
 
 echo "Downloading from $URL"
