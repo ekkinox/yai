@@ -2,17 +2,20 @@ package ui
 
 import (
 	"fmt"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-const exec_icon = "🚀 > "
-const exec_placeholder = "Execute something..."
-const config_icon = "🔒 > "
-const config_placeholder = "Enter your OpenAI key..."
-const chat_icon = "💬 > "
-const chat_placeholder = "Ask me something..."
+const (
+	exec_icon          = "🚀 > "
+	exec_placeholder   = "Execute something..."
+	config_icon        = "🔒 > "
+	config_placeholder = "Enter your OpenAI key..."
+	chat_icon          = "💬 > "
+	chat_placeholder   = "Ask me something..."
+)
 
 type Prompt struct {
 	mode  PromptMode
@@ -20,7 +23,6 @@ type Prompt struct {
 }
 
 func NewPrompt(mode PromptMode) *Prompt {
-
 	input := textinput.New()
 	input.Placeholder = getPromptPlaceholder(mode)
 	input.TextStyle = getPromptStyle(mode)
@@ -43,7 +45,6 @@ func (p *Prompt) GetMode() PromptMode {
 }
 
 func (p *Prompt) SetMode(mode PromptMode) *Prompt {
-
 	p.mode = mode
 
 	p.input.TextStyle = getPromptStyle(mode)
@@ -104,7 +105,6 @@ func getPromptStyle(mode PromptMode) lipgloss.Style {
 }
 
 func getPromptIcon(mode PromptMode) string {
-
 	style := getPromptStyle(mode)
 
 	switch mode {

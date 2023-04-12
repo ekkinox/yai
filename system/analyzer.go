@@ -98,7 +98,6 @@ func GetShell() string {
 	split := strings.Split(strings.Trim(strings.Trim(shell, "\n"), "\""), "/")
 
 	return split[len(split)-1]
-
 }
 
 func GetHomeDirectory() string {

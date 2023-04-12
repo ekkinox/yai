@@ -5,13 +5,15 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const exec_color = "#ffa657"
-const config_color = "#ffffff"
-const chat_color = "#66b3ff"
-const help_color = "#aaaaaa"
-const error_color = "#cc3333"
-const warning_color = "#ffcc00"
-const success_color = "#46b946"
+const (
+	exec_color    = "#ffa657"
+	config_color  = "#ffffff"
+	chat_color    = "#66b3ff"
+	help_color    = "#aaaaaa"
+	error_color   = "#cc3333"
+	warning_color = "#ffcc00"
+	success_color = "#46b946"
+)
 
 type Renderer struct {
 	contentRenderer *glamour.TermRenderer
@@ -22,7 +24,6 @@ type Renderer struct {
 }
 
 func NewRenderer(options ...glamour.TermRendererOption) *Renderer {
-
 	contentRenderer, err := glamour.NewTermRenderer(options...)
 	if err != nil {
 		return nil

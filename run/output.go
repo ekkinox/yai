@@ -14,7 +14,6 @@ func NewRunOutput(error error, errorMessage string, successMessage string) RunOu
 		errorMessage:   errorMessage,
 		successMessage: successMessage,
 	}
-
 }
 
 func (o RunOutput) HasError() bool {

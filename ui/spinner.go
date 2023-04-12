@@ -2,9 +2,10 @@ package ui
 
 import (
 	"fmt"
+	"math/rand"
+
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
-	"math/rand"
 )
 
 var loadingMessages = []string{
@@ -19,13 +20,11 @@ var loadingMessages = []string{
 }
 
 type Spinner struct {
-	mode    PromptMode
 	message string
 	spinner spinner.Model
 }
 
 func NewSpinner() *Spinner {
-
 	spin := spinner.New()
 	spin.Spinner = spinner.MiniDot
 

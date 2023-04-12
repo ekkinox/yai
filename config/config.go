@@ -2,9 +2,10 @@ package config
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/ekkinox/yo/system"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 type Config struct {
@@ -26,7 +27,6 @@ func (c *Config) GetSystemConfig() *system.Analysis {
 }
 
 func NewConfig() (*Config, error) {
-
 	system := system.Analyse()
 
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
@@ -51,7 +51,6 @@ func NewConfig() (*Config, error) {
 }
 
 func WriteConfig(key string) (*Config, error) {
-
 	system := system.Analyse()
 
 	viper.Set(openai_key, key)

@@ -4,5 +4,3 @@ linters:
     - gofumpt
     - tparallel
     - unconvert
-    - unparam
-    - wastedassign

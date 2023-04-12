@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-
 	rand.Seed(time.Now().UnixNano())
 
 	var exec, chat bool

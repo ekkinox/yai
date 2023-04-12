@@ -30,7 +30,6 @@ type Engine struct {
 }
 
 func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
-
 	var client *openai.Client
 
 	if config.GetAiConfig().GetProxy() != "" {
@@ -111,7 +110,6 @@ func (e *Engine) Reset() *Engine {
 }
 
 func (e *Engine) ExecCompletion(input string) (*EngineExecOutput, error) {
-
 	ctx := context.Background()
 
 	e.running = true
@@ -139,7 +137,10 @@ func (e *Engine) ExecCompletion(input string) (*EngineExecOutput, error) {
 		re := regexp.MustCompile(`\{.*?\}`)
 		match := re.FindString(content)
 		if match != "" {
-			json.Unmarshal([]byte(match), &output)
+			err = json.Unmarshal([]byte(match), &output)
+			if err != nil {
+				return nil, err
+			}
 		} else {
 			output = EngineExecOutput{
 				Command:     "",
@@ -153,7 +154,6 @@ func (e *Engine) ExecCompletion(input string) (*EngineExecOutput, error) {
 }
 
 func (e *Engine) ChatStreamCompletion(input string) error {
-
 	ctx := context.Background()
 
 	e.running = true
@@ -212,7 +212,7 @@ func (e *Engine) ChatStreamCompletion(input string) error {
 				last:    false,
 			}
 
-			//time.Sleep(time.Microsecond * 100)
+			// time.Sleep(time.Microsecond * 100)
 		} else {
 			stream.Close()
 
@@ -262,20 +262,15 @@ func (e *Engine) prepareCompletionMessages() []openai.ChatCompletionMessage {
 	}
 
 	if e.mode == ExecEngineMode {
-		for _, m := range e.execMessages {
-			messages = append(messages, m)
-		}
+		messages = append(messages, e.execMessages...)
 	} else {
-		for _, m := range e.chatMessages {
-			messages = append(messages, m)
-		}
+		messages = append(messages, e.chatMessages...)
 	}
 
 	return messages
 }
 
 func (e *Engine) prepareSystemPrompt() string {
-
 	var bodyPart string
 	if e.mode == ExecEngineMode {
 		bodyPart = e.prepareSystemPromptExecPart()

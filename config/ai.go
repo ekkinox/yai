@@ -1,8 +1,10 @@
 package config
 
-const openai_key = "OPENAI_KEY"
-const openai_proxy = "OPENAI_PROXY"
-const openai_temperature = "OPENAI_TEMPERATURE"
+const (
+	openai_key         = "OPENAI_KEY"
+	openai_proxy       = "OPENAI_PROXY"
+	openai_temperature = "OPENAI_TEMPERATURE"
+)
 
 type AiConfig struct {
 	key         string

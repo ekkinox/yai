@@ -107,7 +107,6 @@ func (u *Ui) Init() tea.Cmd {
 }
 
 func (u *Ui) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	var (
 		cmds       []tea.Cmd
 		promptCmd  tea.Cmd
@@ -384,7 +383,7 @@ func (u *Ui) View() string {
 	}
 
 	if !u.state.querying && !u.state.confirming && !u.state.executing {
-		return fmt.Sprintf("%s", u.components.prompt.View())
+		return u.components.prompt.View()
 	}
 
 	if u.state.promptMode == ChatPromptMode {
@@ -434,7 +433,6 @@ func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 }
 
 func (u *Ui) startCli(config *config.Config) tea.Cmd {
-
 	u.config = config
 
 	if u.state.promptMode == DefaultPromptMode {
@@ -495,7 +493,6 @@ func (u *Ui) startConfig() tea.Cmd {
 }
 
 func (u *Ui) finishConfig(key string) tea.Cmd {
-
 	u.state.configuring = false
 
 	config, err := config.WriteConfig(key)
@@ -589,9 +586,7 @@ func (u *Ui) startChatStream(input string) tea.Cmd {
 
 func (u *Ui) awaitChatStream() tea.Cmd {
 	return func() tea.Msg {
-		var output ai.EngineChatStreamOutput
-
-		output = <-u.engine.GetChannel()
+		output := <-u.engine.GetChannel()
 		u.state.buffer += output.GetContent()
 		u.state.querying = !output.IsLast()
 
@@ -600,7 +595,6 @@ func (u *Ui) awaitChatStream() tea.Cmd {
 }
 
 func (u *Ui) execCommand(input string) tea.Cmd {
-
 	u.state.querying = false
 	u.state.confirming = false
 	u.state.executing = true
@@ -616,7 +610,6 @@ func (u *Ui) execCommand(input string) tea.Cmd {
 }
 
 func (u *Ui) editSettings() tea.Cmd {
-
 	u.state.querying = false
 	u.state.confirming = false
 	u.state.executing = true
