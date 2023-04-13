@@ -2,7 +2,7 @@
 
 > AI powered terminal assistant.
 
-![Demo](doc/demo.gif)
+![Demo](examples/demo.gif)
 
 ## Table of contents
 
@@ -13,6 +13,7 @@
   * [REPL mode](#repl-mode)
   * [CLI mode](#cli-mode)
 * [Configuration](#configuration)
+* [Examples](#examples)
 * [Changelog](#changelog)
 <!-- TOC -->
 
@@ -104,6 +105,9 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
   "user_preferences": ""              // user preferences, expressed in natural language
 }
 ```
+## Examples
+
+You can find in the [examples](/examples) folder some use cases where `Yo` is helpful.
 
 ## Changelog
 
