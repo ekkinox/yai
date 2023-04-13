@@ -18,9 +18,9 @@
 
 ## Description
 
-`Yo` is an AI powered assistant for your terminal.
+`Yo` is an AI powered assistant for your terminal, unleashing the power of AI to streamline your command line experience.
 
-You can converse with it using your natural language, and it will provide you with ready to use command lines, or engage in a discussion to assist you.
+You can also engage in conversation with it to get help on any topics.
 
 `Yo` is already aware of your:
 - operating system
@@ -30,8 +30,7 @@ You can converse with it using your natural language, and it will provide you wi
 - home directory
 - preferred editor
 
-And you can also give any supplementary preferences to fine tune your user experience (see [configuration](#configuration) section).
-
+You can also give any supplementary preferences to fine tune your experience (see [configuration](#configuration) section).
 ## Installation
 
 ```shell
@@ -73,13 +72,13 @@ You also can use the following `keyboard shortcuts`:
 ### CLI mode
 
 ```shell
-yo explain what is the therory of relativity
+yo list all processes listening on port 8080
 ```
 
 This will perform a single run, using your [preferred](#configuration) prompt mode.
 
 ```shell
-yo -e list all processes listening on port 8080
+yo -e show the disk usage of my docker resources
 ```
 
 This will perform a single command line generation (enforcing `🚀 exec` prompt mode usage with `-e`).
