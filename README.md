@@ -2,7 +2,7 @@
 
 > AI powered terminal assistant.
 
-![Demo](examples/demo.gif)
+![Intro](examples/intro.gif)
 
 ## Table of contents
 
@@ -105,9 +105,12 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
   "user_preferences": ""              // user preferences, expressed in natural language
 }
 ```
+
+In `REPL` mode, you can press `ctrl+s` to edit settings, they will be hot reloaded once you close your editor.
+
 ## Examples
 
-You can find in the [examples](/examples) folder some use cases where `Yo` is helpful.
+Check the [examples](/examples) folder for some use case ideas.
 
 ## Changelog
 
