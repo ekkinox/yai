@@ -22,7 +22,7 @@
 
 You can also engage in conversation with it to get help on any topics.
 
-`Yo` is already aware of your:
+It is already aware of your:
 - operating system
 - distribution
 - username
