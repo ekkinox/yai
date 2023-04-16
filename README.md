@@ -10,8 +10,8 @@
 * [Description](#description)
 * [Installation](#installation)
 * [Usage](#usage)
-  * [REPL mode](#repl-mode)
   * [CLI mode](#cli-mode)
+  * [REPL mode](#repl-mode)
 * [Configuration](#configuration)
 * [Examples](#examples)
 * [Changelog](#changelog)
@@ -43,8 +43,34 @@ You can also install it from the [available releases](https://github.com/ekkinox
 ## Usage
 
 `Yo` provides 2 run modes:
-- `REPL` mode: terminal user interface, made to offer interactive prompts in a loop
 - `CLI` mode: command line interface, made to perform a single run
+- `REPL` mode: terminal user interface, made to offer interactive prompts in a loop
+
+### CLI mode
+
+```shell
+yo list all processes listening on port 8080
+```
+
+This will perform a single run, using your [preferred](#configuration) prompt mode.
+
+```shell
+yo -e show the disk usage of my docker resources
+```
+
+This will perform a single command line generation (enforcing `🚀 exec` prompt mode usage with `-e`).
+
+```shell
+yo -c generate me a go application example using fiber
+```
+
+This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
+
+```shell
+cat some_script.go | yo -c generate unit tests
+```
+
+You can also `pipe` input that will be taken into account in your request.
 
 ### REPL mode
 
@@ -70,25 +96,11 @@ You also can use the following `keyboard shortcuts`:
 | `ctrl+c` | Exit or interrupt command execution                 |
 
 
-### CLI mode
-
 ```shell
-yo list all processes listening on port 8080
+cat some_text.txt | yo 
 ```
 
-This will perform a single run, using your [preferred](#configuration) prompt mode.
-
-```shell
-yo -e show the disk usage of my docker resources
-```
-
-This will perform a single command line generation (enforcing `🚀 exec` prompt mode usage with `-e`).
-
-```shell
-yo -c generate me a go application example using fiber
-```
-
-This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
+You can also `pipe` input that will be taken into account in your interaction.
 
 ## Configuration
 

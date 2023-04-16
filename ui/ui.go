@@ -25,6 +25,7 @@ type UiState struct {
 	confirming  bool
 	executing   bool
 	args        string
+	pipe        string
 	buffer      string
 	command     string
 }
@@ -49,17 +50,18 @@ type Ui struct {
 	history    *history.History
 }
 
-func NewUi(runMode RunMode, promptMode PromptMode, args string) *Ui {
+func NewUi(input *UiInput) *Ui {
 	return &Ui{
 		state: UiState{
 			error:       nil,
-			runMode:     runMode,
-			promptMode:  promptMode,
+			runMode:     input.GetRunMode(),
+			promptMode:  input.GetPromptMode(),
 			configuring: false,
 			querying:    false,
 			confirming:  false,
 			executing:   false,
-			args:        args,
+			args:        input.GetArgs(),
+			pipe:        input.GetPipe(),
 			buffer:      "",
 			command:     "",
 		},
@@ -68,7 +70,7 @@ func NewUi(runMode RunMode, promptMode PromptMode, args string) *Ui {
 			150,
 		},
 		components: UiComponents{
-			prompt: NewPrompt(promptMode),
+			prompt: NewPrompt(input.GetPromptMode()),
 			renderer: NewRenderer(
 				glamour.WithAutoStyle(),
 				glamour.WithWordWrap(150),
@@ -434,6 +436,10 @@ func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 				return err
 			}
 
+			if u.state.pipe != "" {
+				engine.SetPipe(u.state.pipe)
+			}
+
 			u.engine = engine
 			u.state.buffer = "Welcome \n\n"
 			u.state.command = ""
@@ -460,6 +466,10 @@ func (u *Ui) startCli(config *config.Config) tea.Cmd {
 	if err != nil {
 		u.state.error = err
 		return nil
+	}
+
+	if u.state.pipe != "" {
+		engine.SetPipe(u.state.pipe)
 	}
 
 	u.engine = engine
@@ -518,6 +528,10 @@ func (u *Ui) finishConfig(key string) tea.Cmd {
 	if err != nil {
 		u.state.error = err
 		return nil
+	}
+
+	if u.state.pipe != "" {
+		engine.SetPipe(u.state.pipe)
 	}
 
 	u.engine = engine
@@ -647,6 +661,9 @@ func (u *Ui) editSettings() tea.Cmd {
 
 		u.config = config
 		engine, error := ai.NewEngine(ai.ExecEngineMode, config)
+		if u.state.pipe != "" {
+			engine.SetPipe(u.state.pipe)
+		}
 		if error != nil {
 			return run.NewRunOutput(error, "[settings error]", "")
 		}
