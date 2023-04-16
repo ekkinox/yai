@@ -10,6 +10,10 @@ For example, this is how it can assist you while developing an application:
 
 ![](dev.gif)
 
+You can also pipe any input and make it work with it:
+
+![](pipe.gif)
+
 ## REPL mode
 
 `Yo` can be used in `REPL` mode to offer interactive prompts and chain instructions.
