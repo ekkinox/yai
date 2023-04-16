@@ -26,6 +26,7 @@ type Engine struct {
 	execMessages []openai.ChatCompletionMessage
 	chatMessages []openai.ChatCompletionMessage
 	channel      chan EngineChatStreamOutput
+	pipe         string
 	running      bool
 }
 
@@ -61,6 +62,7 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 		execMessages: make([]openai.ChatCompletionMessage, 0),
 		chatMessages: make([]openai.ChatCompletionMessage, 0),
 		channel:      make(chan EngineChatStreamOutput),
+		pipe:         "",
 		running:      false,
 	}, nil
 }
@@ -77,6 +79,12 @@ func (e *Engine) GetMode() EngineMode {
 
 func (e *Engine) GetChannel() chan EngineChatStreamOutput {
 	return e.channel
+}
+
+func (e *Engine) SetPipe(pipe string) *Engine {
+	e.pipe = pipe
+
+	return e
 }
 
 func (e *Engine) Interrupt() *Engine {
@@ -261,6 +269,16 @@ func (e *Engine) prepareCompletionMessages() []openai.ChatCompletionMessage {
 		},
 	}
 
+	if e.pipe != "" {
+		messages = append(
+			messages,
+			openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: e.preparePipePrompt(),
+			},
+		)
+	}
+
 	if e.mode == ExecEngineMode {
 		messages = append(messages, e.execMessages...)
 	} else {
@@ -268,6 +286,10 @@ func (e *Engine) prepareCompletionMessages() []openai.ChatCompletionMessage {
 	}
 
 	return messages
+}
+
+func (e *Engine) preparePipePrompt() string {
+	return fmt.Sprintf("I will work on the following input: %s", e.pipe)
 }
 
 func (e *Engine) prepareSystemPrompt() string {
