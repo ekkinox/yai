@@ -67,7 +67,7 @@ yo -c generate me a go application example using fiber
 This will reply to a single question (enforcing `💬 chat` prompt mode usage with `-c`).
 
 ```shell
-cat my_script.go | yo -c generate unit tests for this
+cat some_script.go | yo -c generate unit tests
 ```
 
 You can also `pipe` input that will be taken into account in your request.
@@ -95,6 +95,12 @@ You also can use the following `keyboard shortcuts`:
 | `ctrl+l` | Clear terminal but keep discussion history          |
 | `ctrl+c` | Exit or interrupt command execution                 |
 
+
+```shell
+cat some_text.txt | yo 
+```
+
+You can also `pipe` input that will be taken into account in your interaction.
 
 ## Configuration
 
