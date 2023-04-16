@@ -56,4 +56,4 @@ sudo mv $BINNAME $BINDIR/$BINNAME
 rm "yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
 
 echo
-echo "Installation complete!"
+echo "Installation of version $RELEASETAG complete!"
