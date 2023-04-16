@@ -96,12 +96,6 @@ You also can use the following `keyboard shortcuts`:
 | `ctrl+c` | Exit or interrupt command execution                 |
 
 
-```shell
-cat some_text.txt | yo 
-```
-
-You can also `pipe` input that will be taken into account in your interaction.
-
 ## Configuration
 
 At the first execution, `Yo` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys).
