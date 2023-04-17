@@ -2,7 +2,7 @@
 
 > AI powered terminal assistant.
 
-![Intro](examples/intro.gif)
+![Intro](docs/examples/intro.gif)
 
 ## Table of contents
 
@@ -37,8 +37,6 @@ You can also give any supplementary preferences to fine tune your experience (se
 ```shell
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 ```
-
-This installer will also update `Yo` toi the latest stable release if already installed.
 
 You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
 
@@ -106,10 +104,9 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 
 ```JS
 {
-  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key (mandatory)
+  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key
   "openai_proxy": "",                 // OpenAI API proxy (if needed)
-  "openai_temperature": 0.2,          // OpenAI API temperature (default 0.2)
-  "openai_max_tokens": 1000,          // OpenAI API max_tokens (default 1000)
+  "openai_temperature": 0.2,          // OpenAI API temperature
   "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
   "user_preferences": ""              // user preferences, expressed in natural language
 }
