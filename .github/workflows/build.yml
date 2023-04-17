@@ -1,4 +1,4 @@
-name: test
+name: build
 
 on:
   push:
@@ -8,7 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  tests:
+    name: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,3 +24,15 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          skip-go-installation: true
