@@ -1,7 +1,3 @@
-# 🚀 Yo 💬
-
-> AI powered terminal assistant.
-
 ![Intro](examples/intro.gif)
 
 ```shell
