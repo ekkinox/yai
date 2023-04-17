@@ -1,3 +1,8 @@
+---
+permalink: /examples/
+title: "Examples"
+---
+
 ## CLI mode
 
 `Yo` can be used in `CLI` mode to streamline your terminal workflow.
