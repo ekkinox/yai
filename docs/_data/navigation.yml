@@ -4,8 +4,8 @@ main:
   - title: "Configuration"
     url: /configuration/
   - title: "CLI mode"
-    url: /cli/
+    url: /cli-mode/
   - title: "REPL mode"
-    url: /interactive/
+    url: /repl-mode/
   - title: "Examples"
     url: /examples/

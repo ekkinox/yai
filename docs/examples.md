@@ -1,6 +1,5 @@
 ---
 title: "Examples"
-sitemap: false
 permalink: /examples/
 ---
 
