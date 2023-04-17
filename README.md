@@ -104,9 +104,10 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 
 ```JS
 {
-  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key
+  "openai_key": "sk-xxxxxxxxx",       // OpenAI API key (mandatory)
   "openai_proxy": "",                 // OpenAI API proxy (if needed)
-  "openai_temperature": 0.2,          // OpenAI API temperature
+  "openai_temperature": 0.2,          // OpenAI API temperature (default 0.2)
+  "openai_max_tokens": 1000,          // OpenAI API max_tokens (default 1000)
   "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
   "user_preferences": ""              // user preferences, expressed in natural language
 }
