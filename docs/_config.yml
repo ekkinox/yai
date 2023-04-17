@@ -53,5 +53,5 @@ defaults:
       path: "_pages"
       type: pages
     values:
-      layout: default
-      author_profile: true
+      layout: splash
+      author_profile: false
