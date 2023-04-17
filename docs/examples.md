@@ -4,7 +4,7 @@ sitemap: false
 permalink: /examples/
 ---
 
-## CLI mode
+CLI mode
 
 `Yo` can be used in `CLI` mode to streamline your terminal workflow.
 
@@ -16,11 +16,11 @@ You can also pipe any input and make it work with it:
 
 ![](https://raw.githubusercontent.com/ekkinox/yo/main/docs/_assets/pipe.gif)
 
-## REPL mode
+REPL mode
 
 `Yo` can be used in `REPL` mode to offer interactive prompts and chain instructions.
 
-### Command lines
+Command lines
 
 An example on how it can help you to manage your system:
 
@@ -38,7 +38,7 @@ Or even help you while using a k8s cluster:
 
 ![](https://raw.githubusercontent.com/ekkinox/yo/main/docs/_assets/k8s.gif)
 
-### Chat
+Chat
 
 `Yo` is not made to just generate command lines. You can also engage in a discussion with it about any topics.
 

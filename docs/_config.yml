@@ -1,5 +1,5 @@
 title: 🚀 Yo 💬
-email:
+email: ekkinox@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
@@ -7,7 +7,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 twitter_username: noxekki
 github_username: ekkinox
 minimal_mistakes_skin: dark
-search: true
+search: false
 
 # Build settings
 markdown: kramdown
@@ -52,17 +52,6 @@ footer:
       url: "https://github.com/ekkinox"
 
 defaults:
-  # _posts
-  - scope:
-      path: ""
-      type: posts
-    values:
-      layout: single
-      author_profile: true
-      read_time: true
-      comments: true
-      share: true
-      related: true
   # _pages
   - scope:
       path: "_pages"
@@ -70,10 +59,3 @@ defaults:
     values:
       layout: single
       author_profile: true
-
-category_archive:
-  type: liquid
-  path: /categories/
-tag_archive:
-  type: liquid
-  path: /tags/
