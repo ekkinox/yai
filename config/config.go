@@ -39,8 +39,9 @@ func NewConfig() (*Config, error) {
 	return &Config{
 		ai: AiConfig{
 			key:         viper.GetString(openai_key),
-			temperature: viper.GetFloat64(openai_temperature),
 			proxy:       viper.GetString(openai_proxy),
+			temperature: viper.GetFloat64(openai_temperature),
+			maxTokens:   viper.GetInt(openai_max_tokens),
 		},
 		user: UserConfig{
 			defaultPromptMode: viper.GetString(user_default_prompt_mode),
@@ -52,10 +53,12 @@ func NewConfig() (*Config, error) {
 
 func WriteConfig(key string, write bool) (*Config, error) {
 	system := system.Analyse()
-
+	// ai defaults
 	viper.Set(openai_key, key)
-	viper.SetDefault(openai_temperature, 0.2)
 	viper.SetDefault(openai_proxy, "")
+	viper.SetDefault(openai_temperature, 0.2)
+	viper.SetDefault(openai_max_tokens, 1000)
+	// user defaults
 	viper.SetDefault(user_default_prompt_mode, "exec")
 	viper.SetDefault(user_preferences, "")
 
