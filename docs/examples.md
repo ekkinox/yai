@@ -1,18 +1,14 @@
-# Yo - Usage examples
-
-> `Yo` can help you in many ways. Check some examples of what it can do for you.
-
 ## CLI mode
 
 `Yo` can be used in `CLI` mode to streamline your terminal workflow.
 
 For example, this is how it can assist you while developing an application:
 
-![](dev.gif)
+![](_assets/dev.gif)
 
 You can also pipe any input and make it work with it:
 
-![](pipe.gif)
+![](_assets/pipe.gif)
 
 ## REPL mode
 
@@ -22,22 +18,22 @@ You can also pipe any input and make it work with it:
 
 An example on how it can help you to manage your system:
 
-![](system.gif)
+![](_assets/system.gif)
 
 Or help you to manage your packages:
 
-![](pkg.gif)
+![](_assets/pkg.gif)
 
 It can also go way further, for example help you to manage docker resources:
 
-![](docker.gif)
+![](_assets/docker.gif)
 
 Or even help you while using a k8s cluster:
 
-![](k8s.gif)
+![](_assets/k8s.gif)
 
 ### Chat
 
 `Yo` is not made to just generate command lines. You can also engage in a discussion with it about any topics.
 
-![](chat.gif)
+![](_assets/chat.gif)

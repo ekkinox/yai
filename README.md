@@ -2,7 +2,7 @@
 
 > AI powered terminal assistant.
 
-![Intro](docs/examples/intro.gif)
+![Intro](docs/_assets/intro.gif)
 
 ## Table of contents
 

@@ -1,9 +1,11 @@
 main:
-  - title: "Posts"
-    url: /posts/
-  - title: "Categories"
-    url: /categories/
-  - title: "Tags"
-    url: /tags/
-  - title: "About"
-    url: /about/
+  - title: "Installation"
+    url: /installation/
+  - title: "Configuration"
+    url: /configuration/
+  - title: "CLI mode"
+    url: /cli/
+  - title: "REPL mode"
+    url: /repl/
+  - title: "Examples"
+    url: /examples/
