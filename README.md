@@ -18,7 +18,6 @@
   * [CLI mode](#cli-mode)
   * [REPL mode](#repl-mode)
 * [Configuration](#configuration)
-* [Examples](#examples)
 * [Changelog](#changelog)
 <!-- TOC -->
 
@@ -118,10 +117,6 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 ```
 
 In `REPL` mode, you can press `ctrl+s` to edit settings, they will be hot reloaded once you close your editor.
-
-## Examples
-
-Check the [examples](/examples) folder for some use case ideas.
 
 ## Changelog
 
