@@ -10,6 +10,7 @@ func TestAiConfig(t *testing.T) {
 	t.Run("GetKey", testGetKey)
 	t.Run("GetProxy", testGetProxy)
 	t.Run("GetTemperature", testGetTemperature)
+	t.Run("GetMaxTokens", testGetMaxTokens)
 }
 
 func testGetKey(t *testing.T) {
@@ -37,4 +38,13 @@ func testGetTemperature(t *testing.T) {
 	actualTemperature := aiConfig.GetTemperature()
 
 	assert.Equal(t, expectedTemperature, actualTemperature, "The two temperatures should be the same.")
+}
+
+func testGetMaxTokens(t *testing.T) {
+	expectedMaxTokens := 2000
+	aiConfig := AiConfig{maxTokens: expectedMaxTokens}
+
+	actualMaxTokens := aiConfig.GetMaxTokens()
+
+	assert.Equal(t, expectedMaxTokens, actualMaxTokens, "The two maxTokens should be the same.")
 }

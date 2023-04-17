@@ -46,7 +46,7 @@ BINNAME="${BINNAME:-yo}"
 BINDIR="${BINDIR:-/usr/local/bin}"
 URL="https://github.com/$REPOOWNER/$REPONAME/releases/download/${RELEASETAG}/yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz"
 
-echo "Downloading from $URL"
+echo "Downloading version $RELEASETAG from $URL"
 echo
 
 curl -q --fail --location --progress-bar --output "yo_${RELEASETAG}_${KERNEL}_${MACHINE}.tar.gz" "$URL"

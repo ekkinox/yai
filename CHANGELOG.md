@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.0
+
+### Added
+
+- Configuration for OpenAI API max-tokens (default 1000)
+- Better feedback for install script
+
+### Updated
+
+- sashabaranov/go-openai to v1.8.0
+
 ## 0.2.0
 
 ### Added
