@@ -2,7 +2,7 @@ title: 🚀 Yo 💬
 title_separator: "|"
 email: ekkinox@gmail.com
 repository: "ekkinox/yo"
-description: >- # this means to ignore newlines until "baseurl:"
+description: >-
   Yo, an AI (artificial intelligence) powered terminal assistant. 
   Use it to prepare and execute any command lines from your needs expressed in your natural language. 
   You can also engage in conversation with it about any topics you may think about.
@@ -11,15 +11,8 @@ twitter_username: noxekki
 github_username: ekkinox
 minimal_mistakes_skin: dark
 search: false
-
-# Build settings
 markdown: kramdown
 remote_theme: mmistakes/minimal-mistakes
-# Outputting
-permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
-paginate_path: /page:num/
-timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 include:
   - _pages
@@ -60,5 +53,5 @@ defaults:
       path: "_pages"
       type: pages
     values:
-      layout: single
+      layout: default
       author_profile: true

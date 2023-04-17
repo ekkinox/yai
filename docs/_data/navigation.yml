@@ -1,6 +1,4 @@
 main:
-  - title: "Installation"
-    url: /installation/
   - title: "Configuration"
     url: /configuration/
   - title: "CLI mode"
