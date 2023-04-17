@@ -38,6 +38,8 @@ You can also give any supplementary preferences to fine tune your experience (se
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 ```
 
+This installer will also update `Yo` toi the latest stable release if already installed.
+
 You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
 
 ## Usage
