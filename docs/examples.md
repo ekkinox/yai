@@ -1,7 +1,7 @@
 ---
 title: "Examples"
 sitemap: false
-permalink: /examples
+permalink: /examples/
 ---
 
 ## CLI mode

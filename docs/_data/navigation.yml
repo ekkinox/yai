@@ -6,6 +6,6 @@ main:
   - title: "CLI mode"
     url: /cli/
   - title: "REPL mode"
-    url: /repl/
+    url: /interactive/
   - title: "Examples"
     url: /examples/
