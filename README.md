@@ -1,5 +1,7 @@
 # 🚀 Yo 💬
 
+[![test](https://github.com/ekkinox/yo/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/build.yml)
+[![lint](https://github.com/ekkinox/yo/actions/workflows/lint.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/lint.yml)
 > AI powered terminal assistant.
 
 ![Intro](docs/_assets/intro.gif)
