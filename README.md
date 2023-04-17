@@ -1,7 +1,6 @@
 # 🚀 Yo 💬
 
-[![test](https://github.com/ekkinox/yo/actions/workflows/test.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/test.yml)
-[![lint](https://github.com/ekkinox/yo/actions/workflows/lint.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/lint.yml)
+[![build](https://github.com/ekkinox/yo/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/build.yml)
 [![release](https://github.com/ekkinox/yo/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/release.yml)
 [![doc](https://github.com/ekkinox/yo/actions/workflows/doc.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/doc.yml)
 
