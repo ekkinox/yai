@@ -14,3 +14,5 @@ jobs:
       - run: pip install mkdocs-material
       - run: pip install mkdocs-render-swagger-plugin
       - run: mkdocs gh-deploy --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
