@@ -1,5 +1,6 @@
 ---
 title: "Examples"
+classes: wide
 permalink: /examples/
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "CLI mode"
+classes: wide
 permalink: /cli-mode/
 ---
 

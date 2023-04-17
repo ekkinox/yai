@@ -1,5 +1,6 @@
 ---
 title: "Configuration"
+classes: wide
 permalink: /configuration/
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "REPL mode"
+classes: wide
 permalink: /repl-mode/
 ---
 
