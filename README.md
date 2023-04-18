@@ -1,4 +1,4 @@
-# 🚀 Yo 💬 - AI powered terminal assistant.
+# 🚀 Yo 💬 - AI powered terminal assistant
 
 [![build](https://github.com/ekkinox/yo/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/build.yml)
 [![release](https://github.com/ekkinox/yo/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/release.yml)
