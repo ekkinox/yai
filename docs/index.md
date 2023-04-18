@@ -2,17 +2,16 @@
 layout: splash
 classes: wide
 ---
- 
-> Unleash the power of AI to streamline your command line experience.
+
+## `Yo` - AI powered terminal assistant.
+
+> Unleash the power of artificial intelligence to streamline your command line experience.
 
 ![](https://raw.githubusercontent.com/ekkinox/yo/main/docs/_assets/intro.gif)
 
-## Installation
+Just type your request in everyday language, and it will determine the appropriate command line action to take, or engage in conversation on any topics you have in mind.
 
-```shell
-curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
-```
+With `Yo`, you get the **power of AI** with the comfort of staying at `/home`!
 
-You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
-
+See the project on [GitHub](https://github.com/ekkinox/yo).
 

@@ -1,11 +1,10 @@
 main:
-  - title: "GitHub"
-    url: https://github.com/ekkinox/yo
-  - title: "Configuration"
-    url: /configuration/
-  - title: "CLI mode"
-    url: /cli-mode/
-  - title: "REPL mode"
-    url: /repl-mode/
+  - title: "Getting started"
+    url: /getting-started/
+  - title: "Usage"
+    url: /usage/
   - title: "Examples"
     url: /examples/
+  - title: "GitHub"
+    icon: "fab fa-fw fa-github"
+    url: https://github.com/ekkinox/yo

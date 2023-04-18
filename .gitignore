@@ -2,3 +2,4 @@
 coverage.txt
 debug.log
 dist/
+docs/Gemfile.lock
