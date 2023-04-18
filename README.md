@@ -8,7 +8,7 @@
 
 ![Intro](docs/_assets/intro.gif)
 
-# Installation
+## Installation
 
 ```shell
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
@@ -16,7 +16,7 @@ curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 
 You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
 
-# Documentation
+## Documentation
 
 Documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
 
