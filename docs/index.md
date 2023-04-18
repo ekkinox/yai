@@ -3,7 +3,7 @@ layout: splash
 classes: wide
 ---
 
-## `Yo` - AI powered terminal assistant.
+## `Yo` - AI powered terminal assistant
 
 > Unleash the power of artificial intelligence to streamline your command line experience.
 
