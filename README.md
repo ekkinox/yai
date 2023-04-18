@@ -18,5 +18,5 @@ You can also install it from the [available releases](https://github.com/ekkinox
 
 # Documentation
 
-`Yo` documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
+Documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
 
