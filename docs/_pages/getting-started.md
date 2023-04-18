@@ -52,7 +52,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 You can fine tune `Yo` by editing the settings in the `~/.config/yo.json` configuration file.
 
 Note that in `REPL` mode, you can press anytime `ctrl+s` to edit settings:
-- it will open your editor on the settings files
+- it will open your editor on the configuration file
 - and will hot reload settings changes when you're done.
 
 ### Model 
