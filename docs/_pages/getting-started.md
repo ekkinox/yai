@@ -6,7 +6,7 @@ permalink: /getting-started/
 
 ## What is `Yo` ?
 
-`Yo` is an AI powered assistant for your terminal, unleashing the power of AI to streamline your command line experience.
+`Yo` is an assistant for your terminal, unleashing the power of artificial intelligence to streamline your command line experience.
 
 It is already aware of your:
 - operating system & distribution
