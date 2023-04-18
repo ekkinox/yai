@@ -17,7 +17,6 @@ remote_theme: mmistakes/minimal-mistakes
 include:
   - _pages
 
-# Plugins (previously gems:)
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
@@ -48,7 +47,6 @@ footer:
       url: "https://github.com/ekkinox"
 
 defaults:
-  # _pages
   - scope:
       path: "_pages"
       type: pages
