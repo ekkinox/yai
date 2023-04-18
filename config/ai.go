@@ -2,6 +2,7 @@ package config
 
 const (
 	openai_key         = "OPENAI_KEY"
+	openai_model       = "OPENAI_MODEL"
 	openai_proxy       = "OPENAI_PROXY"
 	openai_temperature = "OPENAI_TEMPERATURE"
 	openai_max_tokens  = "OPENAI_MAX_TOKENS"
@@ -9,6 +10,7 @@ const (
 
 type AiConfig struct {
 	key         string
+	model       string
 	proxy       string
 	temperature float64
 	maxTokens   int
@@ -16,6 +18,10 @@ type AiConfig struct {
 
 func (c AiConfig) GetKey() string {
 	return c.key
+}
+
+func (c AiConfig) GetModel() string {
+	return c.model
 }
 
 func (c AiConfig) GetProxy() string {

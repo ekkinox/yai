@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/sashabaranov/go-openai"
 	"strings"
 
 	"github.com/ekkinox/yo/system"
@@ -39,6 +40,7 @@ func NewConfig() (*Config, error) {
 	return &Config{
 		ai: AiConfig{
 			key:         viper.GetString(openai_key),
+			model:       viper.GetString(openai_model),
 			proxy:       viper.GetString(openai_proxy),
 			temperature: viper.GetFloat64(openai_temperature),
 			maxTokens:   viper.GetInt(openai_max_tokens),
@@ -55,6 +57,7 @@ func WriteConfig(key string, write bool) (*Config, error) {
 	system := system.Analyse()
 	// ai defaults
 	viper.Set(openai_key, key)
+	viper.Set(openai_model, openai.GPT3Dot5Turbo)
 	viper.SetDefault(openai_proxy, "")
 	viper.SetDefault(openai_temperature, 0.2)
 	viper.SetDefault(openai_max_tokens, 1000)

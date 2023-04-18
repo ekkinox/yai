@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/sashabaranov/go-openai"
 	"os"
 	"strings"
 	"testing"
@@ -24,6 +25,7 @@ func setupViper(t *testing.T) {
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
 	viper.AddConfigPath("/tmp/")
 	viper.Set(openai_key, "test_key")
+	viper.Set(openai_model, openai.GPT3Dot5Turbo)
 	viper.Set(openai_proxy, "test_proxy")
 	viper.Set(openai_temperature, 0.2)
 	viper.Set(openai_max_tokens, 2000)
@@ -46,6 +48,7 @@ func testNewConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, "test_key", cfg.GetAiConfig().GetKey())
+	assert.Equal(t, openai.GPT3Dot5Turbo, cfg.GetAiConfig().GetModel())
 	assert.Equal(t, "test_proxy", cfg.GetAiConfig().GetProxy())
 	assert.Equal(t, 0.2, cfg.GetAiConfig().GetTemperature())
 	assert.Equal(t, 2000, cfg.GetAiConfig().GetMaxTokens())
@@ -63,6 +66,7 @@ func testWriteConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, "new_test_key", cfg.GetAiConfig().GetKey())
+	assert.Equal(t, openai.GPT3Dot5Turbo, cfg.GetAiConfig().GetModel())
 	assert.Equal(t, "test_proxy", cfg.GetAiConfig().GetProxy())
 	assert.Equal(t, 0.2, cfg.GetAiConfig().GetTemperature())
 	assert.Equal(t, 2000, cfg.GetAiConfig().GetMaxTokens())
@@ -72,6 +76,7 @@ func testWriteConfig(t *testing.T) {
 	assert.NotNil(t, cfg.GetSystemConfig())
 
 	assert.Equal(t, "new_test_key", viper.GetString(openai_key))
+	assert.Equal(t, openai.GPT3Dot5Turbo, viper.GetString(openai_model))
 	assert.Equal(t, "test_proxy", viper.GetString(openai_proxy))
 	assert.Equal(t, 0.2, viper.GetFloat64(openai_temperature))
 	assert.Equal(t, 2000, viper.GetInt(openai_max_tokens))
