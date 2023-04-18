@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"strings"
+
+	"github.com/sashabaranov/go-openai"
 
 	"github.com/ekkinox/yo/system"
 	"github.com/spf13/viper"

@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/sashabaranov/go-openai"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/sashabaranov/go-openai"
 
 	"github.com/ekkinox/yo/system"
 
