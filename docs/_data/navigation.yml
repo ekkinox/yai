@@ -1,4 +1,6 @@
 main:
+  - title: "GitHub"
+    url: https://github.com/ekkinox/yo
   - title: "Configuration"
     url: /configuration/
   - title: "CLI mode"
