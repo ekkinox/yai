@@ -38,6 +38,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 ```json
 {
   "openai_key": "sk-xxxxxxxxx",       // OpenAI API key (mandatory)
+  "openai_model": "gpt-3.5-turbo",    // OpenAI API model (default gpt-3.5-turbo)
   "openai_proxy": "",                 // OpenAI API proxy (default disabled)
   "openai_temperature": 0.2,          // OpenAI API temperature (defaut 0.2)
   "openai_max_tokens": 1000,          // OpenAI API max tokens (default 1000)
@@ -52,7 +53,16 @@ Note that in `REPL` mode, you can press anytime `ctrl+s` to edit settings:
 
 ## Fine tuning
 
-In the `~/.config/yo.json` config file, you can use the `user_preferences` to express any preferences in your natural language:
+### Model 
+
+In the `~/.config/yo.json` config file, you can use the `openai_model` to configure the AI model you want to use.
+By default, the model `gpt-3.5-turbo` is used.
+
+You can find the list of [supported models here](https://platform.openai.com/docs/models/overview).
+
+### Preferences
+
+In the `~/.config/yo.json` config file, you can also use the `user_preferences` to express any preferences in your natural language:
 
 ```json
 {

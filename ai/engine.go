@@ -127,7 +127,7 @@ func (e *Engine) ExecCompletion(input string) (*EngineExecOutput, error) {
 	resp, err := e.client.CreateChatCompletion(
 		ctx,
 		openai.ChatCompletionRequest{
-			Model:     openai.GPT3Dot5Turbo,
+			Model:     e.config.GetAiConfig().GetModel(),
 			MaxTokens: e.config.GetAiConfig().GetMaxTokens(),
 			Messages:  e.prepareCompletionMessages(),
 		},
@@ -169,7 +169,7 @@ func (e *Engine) ChatStreamCompletion(input string) error {
 	e.appendUserMessage(input)
 
 	req := openai.ChatCompletionRequest{
-		Model:     openai.GPT3Dot5Turbo,
+		Model:     e.config.GetAiConfig().GetModel(),
 		MaxTokens: e.config.GetAiConfig().GetMaxTokens(),
 		Messages:  e.prepareCompletionMessages(),
 		Stream:    true,
