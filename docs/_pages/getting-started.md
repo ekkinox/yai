@@ -53,16 +53,23 @@ Note that in `REPL` mode, you can press anytime `ctrl+s` to edit settings:
 
 ## Fine tuning
 
+You can fine tune `Yo` by editing the settings in the `~/.config/yo.json` configuration file.
+
 ### Model 
 
-In the `~/.config/yo.json` config file, you can use the `openai_model` to configure the AI model you want to use.
-By default, the model `gpt-3.5-turbo` is used.
+You can use the `openai_model` to configure the AI model you want to use. By default, the model `gpt-3.5-turbo` is used.
+
+```json
+{
+  "openai_model": "gpt-3.5-turbo"
+}
+```
 
 You can find the list of [supported models here](https://platform.openai.com/docs/models/overview).
 
 ### Preferences
 
-In the `~/.config/yo.json` config file, you can also use the `user_preferences` to express any preferences in your natural language:
+You can use the `user_preferences` to express any preferences in your natural language:
 
 ```json
 {
