@@ -4,9 +4,9 @@ email: ekkinox@gmail.com
 repository: "ekkinox/yo"
 description: >-
   Yo, an AI (artificial intelligence) powered terminal assistant. 
-  Use it to prepare and execute any command lines from your needs expressed in your natural language. 
+  Use it to prepare and execute any command lines from requests expressed in your natural language. 
   You can also engage in conversation with it about any topics you may think about.
-  Unleash the power of AI in your terminal !
+  Unleash the power of AI with the comfort of staying at /home !
 twitter_username: noxekki
 github_username: ekkinox
 minimal_mistakes_skin: dark
