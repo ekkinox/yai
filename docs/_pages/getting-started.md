@@ -43,7 +43,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
   "openai_temperature": 0.2,          // OpenAI API temperature (defaut 0.2)
   "openai_max_tokens": 1000,          // OpenAI API max tokens (default 1000)
   "user_default_prompt_mode": "exec", // user prefered prompt mode: "exec" (default) or "chat"
-  "user_preferences": ""              // user preferences, expressed in natural language
+  "user_preferences": ""              // user preferences, expressed in natural language (default none)
 }
 ```
 
