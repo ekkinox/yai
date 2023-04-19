@@ -32,6 +32,12 @@ You can also `pipe` input that will be taken into account in your request:
 cat some_script.go | yo -c generate unit tests
 ```
 
+Or even:
+
+```shell
+cat error.log | yo -c explain what is wrong here
+```
+
 ## REPL mode
 
 > REPL mode is made to work in an interactive way.

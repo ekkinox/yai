@@ -73,7 +73,7 @@ You can use the `user_preferences` to express any preferences in your natural la
 
 ```json
 {
-  "user_preferences": "I am located in France, and I want you to add the -y flag when I use dnf"
+  "user_preferences": "I want you to talk like an humorist, and I always want you to add the -y flag when I use dnf"
 }
 ```
 
