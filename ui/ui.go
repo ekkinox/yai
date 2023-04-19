@@ -418,6 +418,7 @@ func (u *Ui) View() string {
 func (u *Ui) startRepl(config *config.Config) tea.Cmd {
 	return tea.Sequence(
 		tea.ClearScreen,
+		tea.Println(u.components.renderer.RenderContent(u.components.renderer.RenderHelpMessage())),
 		textinput.Blink,
 		func() tea.Msg {
 			u.config = config
