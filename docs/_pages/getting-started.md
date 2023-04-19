@@ -61,7 +61,7 @@ You can use the `openai_model` to configure the AI model you want to use. By def
 
 ```json
 {
-  "openai_model": "gpt-3.5-turbo"
+  "openai_model": "gpt-4"
 }
 ```
 
