@@ -33,8 +33,6 @@ To install `Yo`, simply run:
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 ```
 
-You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
-
 At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yo.json`.
 
 See [documentation](https://ekkinox.github.io/yo/getting-started/#configuration) for more information.
