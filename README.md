@@ -8,7 +8,26 @@
 
 ![Intro](docs/_assets/intro.gif)
 
-## Installation
+## What is Yo ?
+
+Yo is an assistant for your terminal, using [OpenAI ChatGPT](https://chat.openai.com/) to build and run commands for you. You just need to describe them in your everyday language, Yo will take care or the rest. 
+
+You have any questions on random topics in mind? You can also ask Yo, and get the power of AI without leaving /home.
+
+It is already aware of your:
+- operating system & distribution
+- username, shell & home directory
+- preferred editor
+
+And you can also give any supplementary preferences to fine tune your experience.
+
+## Documentation
+
+A complete documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
+
+## Quick start
+
+To install it, simply run:
 
 ```shell
 curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
@@ -16,7 +35,9 @@ curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
 
 You can also install it from the [available releases](https://github.com/ekkinox/yo/releases).
 
-## Documentation
+At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yo.json`.
 
-Documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
+See [documentation](https://ekkinox.github.io/yo/getting-started/#configuration) for more information.
+
+
 
