@@ -39,4 +39,4 @@ See [documentation](https://ekkinox.github.io/yai/getting-started/#configuration
 
 ## Thanks
 
-Thanks to [@K-arch27](https://github.com/K-arch27) for the `yai` name idea!
+Thanks to [@K-arch27](https://github.com/K-arch27) for the `yai` name suggestion.
