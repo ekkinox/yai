@@ -5,10 +5,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ekkinox/yai/system"
+
 	"github.com/sashabaranov/go-openai"
-
-	"github.com/ekkinox/yo/system"
-
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -33,12 +32,12 @@ func setupViper(t *testing.T) {
 	viper.Set(user_default_prompt_mode, "exec")
 	viper.Set(user_preferences, "test_preferences")
 
-	require.NoError(t, viper.SafeWriteConfigAs("/tmp/yo.json"))
+	require.NoError(t, viper.SafeWriteConfigAs("/tmp/yai.json"))
 }
 
 func cleanup(t *testing.T) {
 	t.Helper()
-	require.NoError(t, os.Remove("/tmp/yo.json"))
+	require.NoError(t, os.Remove("/tmp/yai.json"))
 }
 
 func testNewConfig(t *testing.T) {

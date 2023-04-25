@@ -11,8 +11,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ekkinox/yo/config"
-	"github.com/ekkinox/yo/system"
+	"github.com/ekkinox/yai/config"
+	"github.com/ekkinox/yai/system"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -304,7 +304,7 @@ func (e *Engine) prepareSystemPrompt() string {
 }
 
 func (e *Engine) prepareSystemPromptExecPart() string {
-	return "Your are Yo, a powerful terminal assistant generating a JSON containing a command line for my input.\n" +
+	return "Your are Yai, a powerful terminal assistant generating a JSON containing a command line for my input.\n" +
 		"You will always reply using the following json structure: {\"cmd\":\"the command\", \"exp\": \"some explanation\", \"exec\": true}.\n" +
 		"Your answer will always only contain the json structure, never add any advice or supplementary detail or information, even if I asked the same question before.\n" +
 		"The field cmd will contain a single line command (don't use new lines, use separators like && and ; instead).\n" +
@@ -313,22 +313,22 @@ func (e *Engine) prepareSystemPromptExecPart() string {
 		"\n" +
 		"Examples:\n" +
 		"Me: list all files in my home dir\n" +
-		"Yo: {\"cmd\":\"ls ~\", \"exp\": \"list all files in your home dir\", \"exec\\: true}\n" +
+		"Yai: {\"cmd\":\"ls ~\", \"exp\": \"list all files in your home dir\", \"exec\\: true}\n" +
 		"Me: list all pods of all namespaces\n" +
-		"Yo: {\"cmd\":\"kubectl get pods --all-namespaces\", \"exp\": \"list pods form all k8s namespaces\", \"exec\": true}\n" +
+		"Yai: {\"cmd\":\"kubectl get pods --all-namespaces\", \"exp\": \"list pods form all k8s namespaces\", \"exec\": true}\n" +
 		"Me: how are you ?\n" +
-		"Yo: {\"cmd\":\"\", \"exp\": \"I'm good thanks but I cannot generate a command for this. Use the chat mode to discuss.\", \"exec\": false}"
+		"Yai: {\"cmd\":\"\", \"exp\": \"I'm good thanks but I cannot generate a command for this. Use the chat mode to discuss.\", \"exec\": false}"
 }
 
 func (e *Engine) prepareSystemPromptChatPart() string {
-	return "You are Yo a powerful terminal assistant created by github.com/ekkinox.\n" +
+	return "You are Yai a powerful terminal assistant created by github.com/ekkinox.\n" +
 		"You will answer in the most helpful possible way.\n" +
 		"Always format your answer in markdown format.\n\n" +
 		"For example:\n" +
 		"Me: What is 2+2 ?\n" +
-		"Yo: The answer for `2+2` is `4`\n" +
+		"Yai: The answer for `2+2` is `4`\n" +
 		"Me: +2 again ?\n" +
-		"Yo: The answer is `6`\n"
+		"Yai: The answer is `6`\n"
 }
 
 func (e *Engine) prepareSystemPromptContextPart() string {
