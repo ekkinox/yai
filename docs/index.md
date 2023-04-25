@@ -3,7 +3,7 @@ layout: splash
 classes: wide
 ---
 
-## `Yai` - AI powered terminal assistant
+## `Yai` - Your AI powered terminal assistant
 
 > With `Yai` (your AI), unleash the power of artificial intelligence to streamline your command line experience.
 
