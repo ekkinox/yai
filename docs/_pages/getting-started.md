@@ -65,7 +65,7 @@ You can use the `openai_model` to configure the AI model you want to use. By def
 }
 ```
 
-You can find the list of [supported models here](https://platform.openai.com/docs/models/overview).
+You can find the list of [supported models here](https://platform.openai.com/docs/models/overview) (compatible with OpenAI API `v1/chat/completions`).
 
 ### Preferences
 
