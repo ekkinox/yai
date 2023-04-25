@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.0
+
+### Changed
+
+- Changed project name from Yo to Yai, thanks to [@K-arch27](https://github.com/K-arch27) for the suggestion.
+
 ## 0.5.0
 
 ### Added

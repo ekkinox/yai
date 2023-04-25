@@ -1,18 +1,18 @@
-# 🚀 Yo 💬 - AI powered terminal assistant
+# 🚀 Yai 💬 - AI powered terminal assistant
 
-[![build](https://github.com/ekkinox/yo/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/build.yml)
-[![release](https://github.com/ekkinox/yo/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/release.yml)
-[![doc](https://github.com/ekkinox/yo/actions/workflows/doc.yml/badge.svg)](https://github.com/ekkinox/yo/actions/workflows/doc.yml)
+[![build](https://github.com/ekkinox/yai/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/build.yml)
+[![release](https://github.com/ekkinox/yai/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/release.yml)
+[![doc](https://github.com/ekkinox/yai/actions/workflows/doc.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/doc.yml)
 
 > Unleash the power of artificial intelligence to streamline your command line experience.
 
 ![Intro](docs/_assets/intro.gif)
 
-## What is Yo ?
+## What is Yai ?
 
-`Yo` is an assistant for your terminal, using [OpenAI ChatGPT](https://chat.openai.com/) to build and run commands for you. You just need to describe them in your everyday language, it will take care or the rest. 
+`Yai` (your AI) is an assistant for your terminal, using [OpenAI ChatGPT](https://chat.openai.com/) to build and run commands for you. You just need to describe them in your everyday language, it will take care or the rest. 
 
-You have any questions on random topics in mind? You can also ask `Yo`, and get the power of AI without leaving `/home`.
+You have any questions on random topics in mind? You can also ask `Yai`, and get the power of AI without leaving `/home`.
 
 It is already aware of your:
 - operating system & distribution
@@ -23,19 +23,20 @@ And you can also give any supplementary preferences to fine tune your experience
 
 ## Documentation
 
-A complete documentation is available at [https://ekkinox.github.io/yo/](https://ekkinox.github.io/yo/).
+A complete documentation is available at [https://ekkinox.github.io/yai/](https://ekkinox.github.io/yai/).
 
 ## Quick start
 
-To install `Yo`, simply run:
+To install `Yai`, simply run:
 
 ```shell
-curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
+curl -sS https://raw.githubusercontent.com/ekkinox/yai/main/install.sh | bash
 ```
 
-At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yo.json`.
+At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yai.json`.
 
-See [documentation](https://ekkinox.github.io/yo/getting-started/#configuration) for more information.
+See [documentation](https://ekkinox.github.io/yai/getting-started/#configuration) for more information.
 
+## Thanks
 
-
+Thanks to [@K-arch27](https://github.com/K-arch27) for the `yai` name idea!

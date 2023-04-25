@@ -66,7 +66,7 @@ func (r *Renderer) RenderHelp(in string) string {
 }
 
 func (r *Renderer) RenderConfigMessage() string {
-	welcome := "Yo, welcome! 👋  \n\n"
+	welcome := "Welcome! 👋  \n\n"
 	welcome += "I cannot find a configuration file, please enter an `OpenAI API key` "
 	welcome += "from https://platform.openai.com/account/api-keys so I can generate it for you."
 

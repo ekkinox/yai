@@ -5,10 +5,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ekkinox/yai/system"
+
 	"github.com/sashabaranov/go-openai"
-
-	"github.com/ekkinox/yo/system"
-
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -1,4 +1,4 @@
-module github.com/ekkinox/yo
+module github.com/ekkinox/yai
 
 go 1.19
 

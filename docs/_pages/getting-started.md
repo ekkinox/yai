@@ -4,9 +4,9 @@ classes: wide
 permalink: /getting-started/
 ---
 
-## What is `Yo` ?
+## What is `Yai` ?
 
-`Yo` is an assistant for your terminal, unleashing the power of artificial intelligence to streamline your command line experience.
+`Yai` (your AI) is an assistant for your terminal, unleashing the power of artificial intelligence to streamline your command line experience.
 
 It is already aware of your:
 - operating system & distribution
@@ -17,23 +17,23 @@ And you can also give any supplementary preferences to fine tune your experience
 
 ## Installation
 
-To install `Yo`, simply run:
+To install `Yai`, simply run:
 
 ```shell
-curl -sS https://raw.githubusercontent.com/ekkinox/yo/main/install.sh | bash
+curl -sS https://raw.githubusercontent.com/ekkinox/yai/main/install.sh | bash
 ```
 
 - this will detect the proper binary to install for your machine
 - and upgrade to the latest stable version if already installed
 
-You can also install it from the [available releases](https://github.com/ekkinox/yo/releases) from the GitHub repository.
+You can also install it from the [available releases](https://github.com/ekkinox/yai/releases) from the GitHub repository.
 
 
 ## Configuration
 
-At first run, `Yo` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys) (required to interact with **ChatGPT AI**).
+At first run, `Yai` will ask you to provide an [OpenAI API key](https://platform.openai.com/account/api-keys) (required to interact with **ChatGPT AI**).
 
-It will then generate your configuration in the file `~/.config/yo.json`, with the following structure:
+It will then generate your configuration in the file `~/.config/yai.json`, with the following structure:
 
 ```json
 {
@@ -49,7 +49,7 @@ It will then generate your configuration in the file `~/.config/yo.json`, with t
 
 ## Fine tuning
 
-You can fine tune `Yo` by editing the settings in the `~/.config/yo.json` configuration file.
+You can fine tune `Yai` by editing the settings in the `~/.config/yai.json` configuration file.
 
 Note that in `REPL` mode, you can press anytime `ctrl+s` to edit settings:
 - it will open your editor on the configuration file
@@ -77,4 +77,4 @@ You can use the `user_preferences` to express any preferences in your natural la
 }
 ```
 
-`Yo` will take them into account.
+`Yai` will take them into account.
