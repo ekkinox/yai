@@ -56,6 +56,7 @@ func NewConfig() (*Config, error) {
 }
 
 func WriteConfig(key string, write bool) (*Config, error) {
+
 	system := system.Analyse()
 	// ai defaults
 	viper.Set(openai_key, key)
