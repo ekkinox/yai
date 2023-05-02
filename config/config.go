@@ -29,6 +29,7 @@ func (c *Config) GetSystemConfig() *system.Analysis {
 }
 
 func NewConfig() (*Config, error) {
+
 	system := system.Analyse()
 
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
