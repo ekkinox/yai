@@ -29,7 +29,6 @@ func (c *Config) GetSystemConfig() *system.Analysis {
 }
 
 func NewConfig() (*Config, error) {
-
 	system := system.Analyse()
 
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
@@ -56,7 +55,6 @@ func NewConfig() (*Config, error) {
 }
 
 func WriteConfig(key string, write bool) (*Config, error) {
-
 	system := system.Analyse()
 
 	// ai defaults
