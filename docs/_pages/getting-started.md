@@ -31,7 +31,7 @@ You can also install it from the [available releases](https://github.com/ekkinox
 To uninstall `Yai`, simply run the provided uninstallation script:
 
 ```shell
-./unintsall.sh
+./uninstall.sh
 ```
 
 ## Configuration
