@@ -1,4 +1,4 @@
-# 🚀 Yai 💬 - Your AI powered terminal assistant
+# 🚀 Yai 💬 - AI powered terminal assistant
 
 [![build](https://github.com/ekkinox/yai/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/build.yml)
 [![release](https://github.com/ekkinox/yai/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/release.yml)

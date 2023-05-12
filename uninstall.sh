@@ -7,7 +7,7 @@ echo "Uninstallation of Yai ..."
 echo
 
 sudo rm $BINDIR/$BINNAME
-sudo rm $HOME/.config/yai.json
+sudo rm "${HOME}/.config/${BINNAME}.json"
 
 echo
 echo "Uninstallation of Yai complete!"
