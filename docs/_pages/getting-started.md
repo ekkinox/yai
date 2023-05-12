@@ -28,10 +28,10 @@ curl -sS https://raw.githubusercontent.com/ekkinox/yai/main/install.sh | bash
 
 You can also install it from the [available releases](https://github.com/ekkinox/yai/releases) from the GitHub repository.
 
-To uninstall `Yai`, since it's a standalone library, simply do:
+To uninstall `Yai`, simply run the provided uninstallation script:
 
 ```shell
-rm ~/.config/yai.json && rm /usr/local/bin/yai
+./unintsall.sh
 ```
 
 ## Configuration
