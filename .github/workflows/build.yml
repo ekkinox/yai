@@ -24,6 +24,10 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt
+      - uses: codecov/codecov-action@v3
+        name: Upload coverage reports to Codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   lint:
     name: lint
     runs-on: ubuntu-latest
