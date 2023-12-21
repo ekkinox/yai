@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
@@ -42,13 +41,14 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 			return nil, err
 		}
 
-		transport := &http.Transport{
-			Proxy: http.ProxyURL(proxyUrl),
-		}
+		clientConfig.BaseURL = proxyUrl.Scheme + "://" + proxyUrl.Host + "/v1"
+		// transport := &http.Transport{
+		// 	Proxy: http.ProxyURL(proxyUrl),
+		// }
 
-		clientConfig.HTTPClient = &http.Client{
-			Transport: transport,
-		}
+		// clientConfig.HTTPClient = &http.Client{
+		// 	Transport: transport,
+		// }
 
 		client = openai.NewClientWithConfig(clientConfig)
 	} else {
