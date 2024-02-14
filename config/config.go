@@ -40,6 +40,7 @@ func NewConfig() (*Config, error) {
 
 	return &Config{
 		ai: AiConfig{
+      host:        viper.GetString(openai_host),
 			key:         viper.GetString(openai_key),
 			model:       viper.GetString(openai_model),
 			proxy:       viper.GetString(openai_proxy),
@@ -58,6 +59,7 @@ func WriteConfig(key string, write bool) (*Config, error) {
 	system := system.Analyse()
 
 	// ai defaults
+  viper.Set(openai_host, "https://api.openai.com/v1")
 	viper.Set(openai_key, key)
 	viper.Set(openai_model, openai.GPT3Dot5Turbo)
 	viper.SetDefault(openai_proxy, "")

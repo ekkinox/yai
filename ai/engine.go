@@ -36,6 +36,9 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 	if config.GetAiConfig().GetProxy() != "" {
 
 		clientConfig := openai.DefaultConfig(config.GetAiConfig().GetKey())
+    if config.GetAiConfig().GetHost() != "" {
+      clientConfig.BaseURL = config.GetAiConfig().GetHost()
+    }
 
 		proxyUrl, err := url.Parse(config.GetAiConfig().GetProxy())
 		if err != nil {
@@ -52,7 +55,12 @@ func NewEngine(mode EngineMode, config *config.Config) (*Engine, error) {
 
 		client = openai.NewClientWithConfig(clientConfig)
 	} else {
-		client = openai.NewClient(config.GetAiConfig().GetKey())
+
+		clientConfig := openai.DefaultConfig(config.GetAiConfig().GetKey())
+    if config.GetAiConfig().GetHost() != "" {
+      clientConfig.BaseURL = config.GetAiConfig().GetHost()
+    }
+		client = openai.NewClientWithConfig(clientConfig)
 	}
 
 	return &Engine{

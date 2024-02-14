@@ -24,6 +24,7 @@ func setupViper(t *testing.T) {
 
 	viper.SetConfigName(strings.ToLower(system.GetApplicationName()))
 	viper.AddConfigPath("/tmp/")
+  viper.Set(openai_host, "https://api.openai.com/v1")
 	viper.Set(openai_key, "test_key")
 	viper.Set(openai_model, openai.GPT3Dot5Turbo)
 	viper.Set(openai_proxy, "test_proxy")
@@ -47,6 +48,7 @@ func testNewConfig(t *testing.T) {
 	cfg, err := NewConfig()
 	require.NoError(t, err)
 
+  assert.Equal(t, "https://api.openai.com/v1", cfg.GetAiConfig().GetHost())
 	assert.Equal(t, "test_key", cfg.GetAiConfig().GetKey())
 	assert.Equal(t, openai.GPT3Dot5Turbo, cfg.GetAiConfig().GetModel())
 	assert.Equal(t, "test_proxy", cfg.GetAiConfig().GetProxy())
@@ -65,6 +67,7 @@ func testWriteConfig(t *testing.T) {
 	cfg, err := WriteConfig("new_test_key", false)
 	require.NoError(t, err)
 
+  assert.Equal(t, "https://api.openai.com/v1", cfg.GetAiConfig().GetHost())
 	assert.Equal(t, "new_test_key", cfg.GetAiConfig().GetKey())
 	assert.Equal(t, openai.GPT3Dot5Turbo, cfg.GetAiConfig().GetModel())
 	assert.Equal(t, "test_proxy", cfg.GetAiConfig().GetProxy())
@@ -75,6 +78,7 @@ func testWriteConfig(t *testing.T) {
 
 	assert.NotNil(t, cfg.GetSystemConfig())
 
+  assert.Equal(t, "https://api.openai.com/v1", cfg.GetAiConfig().GetHost())
 	assert.Equal(t, "new_test_key", viper.GetString(openai_key))
 	assert.Equal(t, openai.GPT3Dot5Turbo, viper.GetString(openai_model))
 	assert.Equal(t, "test_proxy", viper.GetString(openai_proxy))

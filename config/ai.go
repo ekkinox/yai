@@ -1,6 +1,7 @@
 package config
 
 const (
+  openai_host        = "OPENAI_HOST"
 	openai_key         = "OPENAI_KEY"
 	openai_model       = "OPENAI_MODEL"
 	openai_proxy       = "OPENAI_PROXY"
@@ -9,11 +10,16 @@ const (
 )
 
 type AiConfig struct {
+  host        string
 	key         string
 	model       string
 	proxy       string
 	temperature float64
 	maxTokens   int
+}
+
+func (c AiConfig) GetHost() string {
+  return c.host
 }
 
 func (c AiConfig) GetKey() string {

@@ -7,10 +7,20 @@ import (
 )
 
 func TestAiConfig(t *testing.T) {
+  t.Run("GetHost", testGetHost)
 	t.Run("GetKey", testGetKey)
 	t.Run("GetProxy", testGetProxy)
 	t.Run("GetTemperature", testGetTemperature)
 	t.Run("GetMaxTokens", testGetMaxTokens)
+}
+
+func testGetHost(t *testing.T) {
+  expectedHost := "https://api.openai.com/v1"
+  aiConfig := AiConfig{host: expectedHost}
+
+  actualHost := aiConfig.GetHost()
+
+  assert.Equal(t, expectedHost, actualHost, "The two hosts should be the same.")
 }
 
 func testGetKey(t *testing.T) {
