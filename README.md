@@ -33,6 +33,12 @@ To install `Yai`, simply run:
 curl -sS https://raw.githubusercontent.com/ekkinox/yai/main/install.sh | bash
 ```
 
+If you are a user of [x-cmd](https://x-cmd.com), you can also use the following command to install `Yai`:
+
+```shell
+x install yai
+```
+
 At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yai.json`.
 
 See [documentation](https://ekkinox.github.io/yai/getting-started/#configuration) for more information.
